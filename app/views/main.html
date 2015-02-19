@@ -1,0 +1,140 @@
+<ol class="breadcrumb">
+    <li><a href="#">Home</a>
+    </li>
+    <li><a href="#">Articles</a>
+    </li>
+    <li class="active">F.B.I. Director Speaks About Race</li>
+</ol>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3> 
+          F.B.I. Director Speaks About Race
+          </h3>
+            <p dd-text-collapse dd-text-collapse-max-length="310" dd-text-collapse-text="{{article}}"></p>
+
+            <div>
+
+                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment"></div>
+
+
+
+                <div class="chart-simple-interface">
+                    <h5>Show me
+
+                            <select ng-model="nomaConfig.xDim" ng-options="f for f in nomaConfig.dims">
+
+                                <option value="">-- undefined --</option>
+
+                            </select>&nbsp;vs&nbsp;.
+
+                            <select ng-model="nomaConfig.yDim" ng-options="f for f in nomaConfig.dims">
+
+                                <option value="">-- undefined --</option>
+
+                            </select>
+
+                            </br>
+                            </br>
+                            Mark nodes with color according to
+
+                            <select ng-model="nomaConfig.colorDim" ng-options="f for f in nomaConfig.dims">
+
+                                <option value="">-- undefined --</option>
+
+                            </select>
+                        </h5>
+
+
+                    <div ng-class="{tryMe: isRelativeSelectFocused}">
+                        <h6>
+                                <input type='checkbox' ng-model="nomaConfig.relativeMode" ng-trueValue="relative" ng-false-value="'absolute'">Check this to make it easy to compare groups of different sizes.</h6>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-6">
+
+            <div class="btn-group">
+
+                <label class="btn btn-primary" ng-model="baseModel" btn-radio='"User"'> User </label>
+                <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Comment"'> Comment </label>
+                <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label>
+            </div>
+            
+            <div class="pull-right">
+                Presets:
+                <select class='form-control' ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+                </select>
+            </div>
+            
+
+            <accordion close-others="false">
+                <accordion-group is-open="isAdvancedOptionOpen" ng-hide='false'>
+
+
+                    <accordion-heading> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isAdvancedOptionOpen, 'glyphicon-chevron-right': !isAdvancedOptionOpen}"></i> Customize Sort Criteria</accordion-heading>
+                    <div class="well">
+                        <div>
+
+                            Article Relevance:
+                            <input type="number" name="input" ng-model='currentCategory.weights.AR' min="0" max="100" required> Converational Relevance:
+                            <input type="number" name="input" ng-model='currentCategory.weights.CR' min="0" max="100" required> Personal XP:
+                            <input type="number" name="input" ng-model='currentCategory.weights.personal' min="0" max="100" required> Readability:
+                            <input type="number" name="input" ng-model='currentCategory.weights.readability' min="0" max="100" required> Brevity:
+
+                            <input type="number" name="input" ng-model='currentCategory.weights.brevity' min="0" max="100" required> Recommendation Score:
+                            <input type="number" name="input" ng-model='currentCategory.weights.recommend' min="0" max="100" required>
+
+                        </div>
+
+                        <!--/span-->
+                    </div>
+                    <!--/row-->
+                </accordion-group>
+            </accordion>
+            <br>
+
+            <tabset>
+                <tab ng-repeat='status in statusArray' heading={{status}}>
+                    <dl>
+                        <dt dir-paginate-start='comment in nomaData |filter: {selected:"true"} | filter:{status: status } |orderBy:"score":true| itemsPerPage: 5' pagination-id="status">
+                            {{comment.display_name}}
+                        </dt>
+                        <br>
+
+                        <dd>
+                            {{comment.commentBody}}
+                            <br> {{comment.selected}}
+                        </dd>
+
+                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
+                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
+
+                        <br dir-paginate-end>
+                    </dl>
+                    <dir-pagination-controls pagination-id='status'></dir-pagination-controls>
+                </tab>
+
+
+                <tab heading='All'>
+                    <dl>
+                        <dt dir-paginate-start='comment in nomaData  | itemsPerPage: 5' pagination-id="All">
+                            {{comment.display_name}}
+                        </dt>
+                        <dd dir-paginate-end>
+                            {{comment.commentBody}}
+                        </dd>
+                    </dl>
+                    <dir-pagination-controls pagination-id='All'></dir-pagination-controls>
+                </tab>
+            </tabset>
+
+        </div>
+    </div>
+</div>
