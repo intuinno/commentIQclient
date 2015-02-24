@@ -171,7 +171,7 @@
                             }
                             return scope.renderDataChange(newVals, scope.config);
 
-                        }, false);
+                        }, true);
 
                         // watch for Config changes and re-render
 
