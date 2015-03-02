@@ -62,95 +62,108 @@
             <div class="btn-group">
 
                 <label class="btn btn-primary" ng-model="baseModel" btn-radio='"User"'> User </label>
-                <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Comment"'> Comment </label>
+                <label class="btn btn-primary" ng-model="baseModel" btn-radio="'Comment'"> Comment </label>
                 <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label>
             </div>
+            
 
-            <div class="pull-right">
-                Presets:
-                <select class='form-control' ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+            <div>
+                <label> Presets: </label>
+                <select class="btn btn-primary" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
                 </select>
             </div>
-
-
-            <accordion close-others="false">
-                <accordion-group is-open="isAdvancedOptionOpen" ng-hide='false'>
-
-
-                    <accordion-heading> <i class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': isAdvancedOptionOpen, 'glyphicon-chevron-right': !isAdvancedOptionOpen}"></i> Customize Sort Criteria</accordion-heading>
-                    <div class="well">
-                        <div>
-
-                            Article Relevance:
-                            <input type="number" name="input" ng-model='currentCategory.weights.AR' min="0" max="100" required> Converational Relevance:
-                            <input type="number" name="input" ng-model='currentCategory.weights.CR' min="0" max="100" required> Personal XP:
-                            <input type="number" name="input" ng-model='currentCategory.weights.personal' min="0" max="100" required> Readability:
-                            <input type="number" name="input" ng-model='currentCategory.weights.readability' min="0" max="100" required> Brevity:
-
-                            <input type="number" name="input" ng-model='currentCategory.weights.brevity' min="0" max="100" required> Recommendation Score:
-                            <input type="number" name="input" ng-model='currentCategory.weights.recommend' min="0" max="100" required>
-
-                        </div>
-
-                        <!--/span-->
-                    </div>
-                    <!--/row-->
-                </accordion-group>
-            </accordion>
             <br>
+
+
+            <div collapse="isSettingCollapsed">
+                <div class="well">
+
+                    <div ng-show="baseModel=='Comment'">
+
+                        <h3> Comment score</h3> Article Relevance:
+                        <input type="range" id="ARSlider" name="input" ng-model='currentCategory.weights.AR' min="0" max="100" required> Converational Relevance:
+                        <input type="range" name="input" ng-model='currentCategory.weights.CR' min="0" max="100" required> Personal XP:
+                        <input type="range" name="input" ng-model='currentCategory.weights.personal' min="0" max="100" required> Readability:
+                        <input type="range" name="input" ng-model='currentCategory.weights.readability' min="0" max="100" required> Brevity:
+
+                        <input type="range" name="input" ng-model='currentCategory.weights.brevity' min="0" max="100" required> Recommendation Score:
+                        <input type="range" name="input" ng-model='currentCategory.weights.recommend' min="0" max="100" required>
+
+                    </div>
+
+                    <div ng-show="baseModel=='User'">
+
+                        <h3> User ranking weights</h3> Activity:
+                        <input type="range" id="ARSlider" name="input" ng-model='currentCategory.weights.userActivity' min="0" max="100" required> Personal XP:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userPersonal' min="0" max="100" required> Brevity:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userBrevity' min="0" max="100" required> Picks count:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userPicks' min="0" max="100" required> Recommendation count:
+
+                        <input type="range" name="input" ng-model='currentCategory.weights.userRecommend' min="0" max="100" required> Readability:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userReadability' min="0" max="100" required>
+
+                    </div>
+
+                </div>
+            </div>
+            <br>
+
+
 
             <tabset>
                 <tab ng-repeat='tab in tabArray' heading={{tab.status}} active=tab.active>
-                    <dl>
-                        <dt dir-paginate-start='comment in nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true| itemsPerPage: 5' pagination-id="tab.status">
-                            {{comment.display_name}}
-                        </dt>
-                        <br>
+                    <div class="commentList">
+                        <dl>
+                            <dt dir-paginate-start='comment in nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true| itemsPerPage: 5' pagination-id="tab.status">
+                                {{comment.display_name}}
+                            </dt>
+                            <br>
 
-                        <dd>
-                            <div ng-bind-html="comment.commentBody"></div>
+                            <dd>
+                                <div ng-bind-html="comment.commentBody"></div>
 
-                            <br> 
-                            score = {{comment.score}}
-                            <br> brush = {{comment.selected}}
+                                <br> score = {{comment.score}}
+                                <br> brush = {{comment.selected}}
 
-                        </dd>
+                            </dd>
 
-                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
-                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
-                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
 
-                        <br dir-paginate-end>
-                    </dl>
+                            <br dir-paginate-end>
+                        </dl>
+                    </div>
                     <dir-pagination-controls pagination-id='tab.status'></dir-pagination-controls>
                 </tab>
 
 
                 <tab heading='All'>
+                    <div class="commentList">
+                        <dl>
+                            <dt dir-paginate-start='comment in nomaData |orderBy:"score":true| itemsPerPage: 5' pagination-id="All">
+                                {{comment.display_name}}
+                            </dt>
+                            <br>
 
-                    <dl>
-                        <dt dir-paginate-start='comment in nomaData |orderBy:"score":true| itemsPerPage: 5' pagination-id="All">
-                            {{comment.display_name}}
-                        </dt>
-                        <br>
+                            <dd>
+                                <div ng-bind-html="comment.commentBody"></div>
+                                <br> score = {{comment.score}}
+                                <br> brush = {{comment.selected}}
 
-                        <dd>
-                            <div ng-bind-html="comment.commentBody"></div>
-                             <br> 
-                            score = {{comment.score}}
-                            <br> brush = {{comment.selected}}
+                            </dd>
 
-                        </dd>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
 
-                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
-                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
-                        <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
-
-                        <br dir-paginate-end>
-                    </dl>
+                            <br dir-paginate-end>
+                        </dl>
+                    </div>
                     <dir-pagination-controls pagination-id='All'></dir-pagination-controls>
                 </tab>
             </tabset>
+
 
         </div>
     </div>

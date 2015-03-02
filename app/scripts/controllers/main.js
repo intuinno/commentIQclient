@@ -9,11 +9,6 @@
  */
 angular.module('commentiqApp')
     .controller('MainCtrl', function($scope) {
-        $scope.awesomeThings = [
-            'HTML5 Boilerplate',
-            'AngularJS',
-            'Karma'
-        ];
 
         $scope.statusArray = ['New', 'Accepted', 'Rejected', 'Picked'];
 
@@ -59,7 +54,18 @@ angular.module('commentiqApp')
                 recommend: 42,
                 brevity: 32
             }
-        }]
+        },{
+            name: 'User',
+            weights: {
+                AR: 82,
+                CR: 72,
+                personal: 62,
+                readability: 52,
+                recommend: 42,
+                brevity: 32
+            }
+        }
+        ]
 
 
         $scope.baseModel = 'Comment';
@@ -73,6 +79,7 @@ angular.module('commentiqApp')
         $scope.currentCategory = $scope.presetCategory[0];
 
         $scope.nomaData = [];
+        $scope.isSettingCollapsed = true;
 
         $scope.nomaConfig = {
 
@@ -129,7 +136,7 @@ angular.module('commentiqApp')
 
         $scope.loadData = function() {
 
-            d3.csv('data/articleData_withScores.csv', function(error, tdata) {
+            d3.csv('data/commentScore_geo_user.csv', function(error, tdata) {
                 var count = 0;
 
                 tdata.map(function(d) {
@@ -140,7 +147,7 @@ angular.module('commentiqApp')
                     d.status = 'New';
                     d.selected = true;
 
-                    d.score = computeScore($scope.currentCategory, d);
+                    d.commentScore = computeScore($scope.currentCategory, d);
                     d.commentBody = d.commentBody.replace(/\\/g, "");
                 });
 
