@@ -32,7 +32,13 @@ angular.module('commentiqApp')
                 personal: 60,
                 readability: 50,
                 recommend: 40,
-                brevity: 30
+                brevity: 30,
+                userActivity: 80,
+                userBrevity: 70,
+                userPersonal: 60,
+                userPicks: 50,
+                userRecommend: 40,
+                userReadability: 30
             }
         }, {
             name: 'Informative',
@@ -42,7 +48,13 @@ angular.module('commentiqApp')
                 personal: 61,
                 readability: 51,
                 recommend: 41,
-                brevity: 31
+                brevity: 31,
+                userActivity: 81,
+                userBrevity: 71,
+                userPersonal: 61,
+                userPicks: 51,
+                userRecommend: 41,
+                userReadability: 31
             }
         }, {
             name: 'Unexpected',
@@ -52,20 +64,15 @@ angular.module('commentiqApp')
                 personal: 62,
                 readability: 52,
                 recommend: 42,
-                brevity: 32
+                brevity: 32,
+                userActivity: 82,
+                userBrevity: 73,
+                userPersonal: 64,
+                userPicks: 54,
+                userRecommend: 44,
+                userReadability: 34
             }
-        },{
-            name: 'User',
-            weights: {
-                AR: 82,
-                CR: 72,
-                personal: 62,
-                readability: 52,
-                recommend: 42,
-                brevity: 32
-            }
-        }
-        ]
+        }]
 
 
         $scope.baseModel = 'Comment';
@@ -109,9 +116,16 @@ angular.module('commentiqApp')
 
         $scope.nomaConfig.SVGAspectRatio = 1.4;
 
-        var computeScore = function(criteria, comment) {
+        var computeScoreComment = function(criteria, comment) {
 
             var score = criteria.weights.AR * comment.ArticleRelevance + criteria.weights.CR * comment.ConversationalRelevance + criteria.weights.personal * comment.PersonalXP + criteria.weights.readability * comment.Readability + criteria.weights.brevity * comment.Brevity + criteria.weights.recommend * comment.RecommendationScore;
+
+            return score;
+        };
+
+        var computeScoreUser = function(criteria, comment) {
+
+            var score = criteria.weights.userActivity * comment.AVGcommentspermonth + criteria.weights.userBrevity * comment.AVGBrevity + criteria.weights.userPicks * comment.AVGPicks + criteria.weights.userReadability * comment.AVGReadability + criteria.weights.userRecommend * comment.AVGRecommendationScore + criteria.weights.userPersonal * comment.AVGPersonalXP;
 
             return score;
         };
@@ -125,12 +139,31 @@ angular.module('commentiqApp')
 
         }, true);
 
+        $scope.$watch(function() {
+            return $scope.baseModel;
+        }, function(newVals, oldVals) {
+            // debugger;
+
+            updateScore();
+
+        }, true);
+
         var updateScore = function() {
 
-            $scope.nomaData.forEach(function(d) {
+            if ($scope.baseModel === 'Comment') {
 
-                d.score = computeScore($scope.currentCategory, d);
-            });
+                $scope.nomaData.forEach(function(d) {
+
+                    d.score = computeScoreComment($scope.currentCategory, d);
+                });
+            } else if ($scope.baseModel === 'User') {
+
+                $scope.nomaData.forEach(function(d) {
+
+                    d.score = computeScoreUser($scope.currentCategory, d);
+                });
+
+            }
         };
 
 
@@ -147,11 +180,14 @@ angular.module('commentiqApp')
                     d.status = 'New';
                     d.selected = true;
 
-                    d.commentScore = computeScore($scope.currentCategory, d);
                     d.commentBody = d.commentBody.replace(/\\/g, "");
                 });
 
+                
                 $scope.nomaData = tdata;
+
+                updateScore();
+
 
                 $scope.nomaConfig.dims = d3.keys(tdata[0]);
 

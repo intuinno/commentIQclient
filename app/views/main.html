@@ -59,20 +59,34 @@
         </div>
         <div class="col-sm-6">
 
+            <br>
+
             <div class="btn-group">
 
                 <label class="btn btn-primary" ng-model="baseModel" btn-radio='"User"'> User </label>
                 <label class="btn btn-primary" ng-model="baseModel" btn-radio="'Comment'"> Comment </label>
-                <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label>
+                <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
             </div>
-            
 
-            <div>
-                <label> Presets: </label>
-                <select class="btn btn-primary" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+
+            <!--             <div>
+                <label class=" control-label"> Presets: </label>
+                <div class=" selectContainer">
+                    <select ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+                    </select>
+                </div>
+            </div> -->
+            <div class='pull-right'>
+                Presets:
+                <select class="btn btn-primary dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
                 </select>
+                <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                    <i class="fa fa-cog"></i>
+                </a>
             </div>
+
             <br>
+
 
 
             <div collapse="isSettingCollapsed">
@@ -80,7 +94,7 @@
 
                     <div ng-show="baseModel=='Comment'">
 
-                        <h3> Comment score</h3> Article Relevance:
+                        <h3> Comment ranking weights</h3> Article Relevance:
                         <input type="range" id="ARSlider" name="input" ng-model='currentCategory.weights.AR' min="0" max="100" required> Converational Relevance:
                         <input type="range" name="input" ng-model='currentCategory.weights.CR' min="0" max="100" required> Personal XP:
                         <input type="range" name="input" ng-model='currentCategory.weights.personal' min="0" max="100" required> Readability:
@@ -108,13 +122,20 @@
             </div>
             <br>
 
+            <input type="text" ng-model='searchText' class="form-control" placeholder="Search for...">
+
+
 
 
             <tabset>
-                <tab ng-repeat='tab in tabArray' heading={{tab.status}} active=tab.active>
+                <tab ng-repeat='tab in tabArray' active=tab.active>
+
+                    <tab-heading>
+                        <span>{{tab.status}}</span> ({{filteredComment.length}})
+                    </tab-heading>
                     <div class="commentList">
                         <dl>
-                            <dt dir-paginate-start='comment in nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true| itemsPerPage: 5' pagination-id="tab.status">
+                            <dt dir-paginate-start='comment in filteredComment=(nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true | filter: searchText) | itemsPerPage: 5' pagination-id="tab.status">
                                 {{comment.display_name}}
                             </dt>
                             <br>
