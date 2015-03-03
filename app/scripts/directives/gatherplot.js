@@ -317,9 +317,9 @@
                                             .style("top", (d3.event.pageY - 28) + "px");
                                     })
                                     .on("mouseout", function(d) {
-                                        // tooltip.transition()
-                                        //     .duration(500)
-                                        //     .style("opacity", 0);
+                                        tooltip.transition()
+                                            .duration(500)
+                                            .style("opacity", 0);
                                     })
                                     .on("mousedown", function(d) {
                                         if (d3.event.shiftKey) d3.select(this).classed("selected", d.selected = !d.selected);
@@ -1407,7 +1407,7 @@
                                             }
 
                                         });
-                                        scope.$apply();
+                                        // scope.$apply();
                                         scope.handleDimsumChange(scope.dimsum);
 
 
@@ -1415,6 +1415,7 @@
                                     .on("brushend", function() {
                                         d3.event.target.clear();
                                         d3.select(this).call(d3.event.target);
+                                        scope.$apply();
                                     }));
 
 

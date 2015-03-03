@@ -14,11 +14,15 @@
           </h3>
             <p dd-text-collapse dd-text-collapse-max-length="310" dd-text-collapse-text="{{article}}"></p>
 
+            <gathermap> </gathermap>
+
             <div>
 
-                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment"></div>
+                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
 
+                </div>
 
+                <br>
 
                 <div class="chart-simple-interface">
                     <h5>Show me
