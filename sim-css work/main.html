@@ -1,0 +1,197 @@
+<ol class="breadcrumb">
+    <li><a href="#">Home</a>
+    </li>
+    <li><a href="#">Articles</a>
+    </li>
+    <li class="active">F.B.I. Director Speaks About Race</li>
+</ol>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-6">
+            <h3> 
+          F.B.I. Director Speaks About Race
+          </h3>
+            <div class="article">
+            <p dd-text-collapse dd-text-collapse-max-length="500" dd-text-collapse-text="{{article}}"></p>
+            </div>
+            <gathermap> </gathermap>
+
+            <div>
+
+                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
+
+                </div>
+
+                <br>
+
+                <div class="chart-simple-interface">
+                    <h5>Show me
+
+                            <select ng-model="nomaConfig.xDim" ng-options="f for f in nomaConfig.dims">
+
+                                <option value="">-- undefined --</option>
+
+                            </select>&nbsp;vs&nbsp;.
+
+                            <select ng-model="nomaConfig.yDim" ng-options="f for f in nomaConfig.dims">
+
+                                <option value="">-- undefined --</option>
+
+                            </select>
+
+                            </br>
+                            </br>
+                            Mark nodes with color according to
+
+                            <select ng-model="nomaConfig.colorDim" ng-options="f for f in nomaConfig.dims">
+
+                                <option value="">-- undefined --</option>
+
+                            </select>
+                        </h5>
+
+
+                    <div ng-class="{tryMe: isRelativeSelectFocused}">
+                        <h6>
+                                <input type='checkbox' ng-model="nomaConfig.relativeMode" ng-trueValue="relative" ng-false-value="'absolute'">Check this to make it easy to compare groups of different sizes.</h6>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="col-sm-6">
+
+            <br>
+
+            <div class="btn-group">
+
+                <label class="btn btn-primary" ng-model="baseModel" btn-radio='"User"'> User </label>
+                <label class="btn btn-primary" ng-model="baseModel" btn-radio="'Comment'"> Comment </label>
+                <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
+            </div>
+
+
+            <!--             <div>
+                <label class=" control-label"> Presets: </label>
+                <div class=" selectContainer">
+                    <select ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+                    </select>
+                </div>
+            </div> -->
+            <div class='pull-right'>
+                Presets:
+                <select class="btn btn-primary dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+                </select>
+                <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                    <i class="fa fa-cog"></i>
+                </a>
+            </div>
+
+            <br>
+
+
+
+            <div collapse="isSettingCollapsed">
+                <div class="well">
+
+                    <div ng-show="baseModel=='Comment'">
+
+                        <h3> Comment ranking weights</h3> Article Relevance:
+                        <input type="range" id="ARSlider" name="input" ng-model='currentCategory.weights.AR' min="0" max="100" required> Converational Relevance:
+                        <input type="range" name="input" ng-model='currentCategory.weights.CR' min="0" max="100" required> Personal XP:
+                        <input type="range" name="input" ng-model='currentCategory.weights.personal' min="0" max="100" required> Readability:
+                        <input type="range" name="input" ng-model='currentCategory.weights.readability' min="0" max="100" required> Brevity:
+
+                        <input type="range" name="input" ng-model='currentCategory.weights.brevity' min="0" max="100" required> Recommendation Score:
+                        <input type="range" name="input" ng-model='currentCategory.weights.recommend' min="0" max="100" required>
+
+                    </div>
+
+                    <div ng-show="baseModel=='User'">
+
+                        <h3> User ranking weights</h3> Activity:
+                        <input type="range" id="ARSlider" name="input" ng-model='currentCategory.weights.userActivity' min="0" max="100" required> Personal XP:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userPersonal' min="0" max="100" required> Brevity:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userBrevity' min="0" max="100" required> Picks count:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userPicks' min="0" max="100" required> Recommendation count:
+
+                        <input type="range" name="input" ng-model='currentCategory.weights.userRecommend' min="0" max="100" required> Readability:
+                        <input type="range" name="input" ng-model='currentCategory.weights.userReadability' min="0" max="100" required>
+
+                    </div>
+
+                </div>
+            </div>
+            <br>
+
+            <input type="text" ng-model='searchText' class="form-control" placeholder="Search for...">
+
+
+
+
+            <tabset>
+                <tab ng-repeat='tab in tabArray' active=tab.active>
+
+                    <tab-heading>
+                        <span>{{tab.status}}</span> ({{filteredComment.length}})
+                    </tab-heading>
+                    <div class="commentList">
+                        <dl>
+                            <dt dir-paginate-start='comment in filteredComment=(nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true | filter: searchText) | itemsPerPage: 5' pagination-id="tab.status">
+                                {{comment.display_name}}
+                            </dt>
+                            <br>
+
+                            <dd>
+                                <div ng-bind-html="comment.commentBody"></div>
+
+                                <br> score = {{comment.score}}
+                                <br> brush = {{comment.selected}}
+
+                            </dd>
+
+
+                            <a href="" class="btn btn-primary" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="btn btn-primary" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="btn btn-primary" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
+
+                            <br dir-paginate-end>
+                        </dl>
+                    </div>
+                    <dir-pagination-controls pagination-id='tab.status'></dir-pagination-controls>
+                </tab>
+
+
+                <tab heading='All'>
+                    <div class="commentList">
+                        <dl>
+                            <dt dir-paginate-start='comment in nomaData |orderBy:"score":true| itemsPerPage: 5' pagination-id="All">
+                                {{comment.display_name}}
+                            </dt>
+                            <br>
+
+                            <dd>
+                                <div ng-bind-html="comment.commentBody"></div>
+                                <br> score = {{comment.score}}
+                                <br> brush = {{comment.selected}}
+
+                            </dd>
+
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
+
+                            <br dir-paginate-end>
+                        </dl>
+                    </div>
+                    <dir-pagination-controls pagination-id='All'></dir-pagination-controls>
+                </tab>
+            </tabset>
+
+
+        </div>
+    </div>
+</div>
