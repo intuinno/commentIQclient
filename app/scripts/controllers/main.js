@@ -113,8 +113,11 @@ angular.module('commentiqApp')
         $scope.dimsumData = {};
         $scope.dimsum = {};
         $scope.dimsum.selectionSpace = [];
+        $scope.filteredComment = [];
 
         $scope.nomaConfig.SVGAspectRatio = 1.4;
+
+        $scope.overview = 'gathermap';
 
         var computeScoreComment = function(criteria, comment) {
 

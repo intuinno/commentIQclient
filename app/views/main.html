@@ -14,9 +14,22 @@
           </h3>
             <p dd-text-collapse dd-text-collapse-max-length="310" dd-text-collapse-text="{{article}}"></p>
 
-            <gathermap> </gathermap>
+            <br>
 
-            <div>
+            <div class="btn-group">
+
+                <label class="btn btn-primary" ng-model="overview" btn-radio='"gatherplot"'> Custom </label>
+                <label class="btn btn-primary" ng-model="overview" btn-radio="'gathermap'"> Map </label>
+                <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
+            </div>
+
+            <div ng-show="overview=='gathermap'">
+
+                <div  class="gathermap" data="nomaData"> </div>
+
+            </div>
+
+            <div ng-show="overview=='gatherplot'">
 
                 <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
 

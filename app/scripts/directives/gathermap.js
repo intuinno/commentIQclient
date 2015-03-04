@@ -9,28 +9,75 @@
 angular.module('commentiqApp')
     .directive('gathermap', function() {
         return {
-            template: '<div id="gathermap"></div>',
-            restrict: 'EA',
+            restrict: 'EAC',
             scope: {
                 data: "=",
                 config: "=",
                 context: "="
             },
+
             link: function postLink(scope, element, attrs) {
 
-                var dataset = [1, 2, 3, 4];
+                scope.$watch('data', function(newVals, oldVals) {
 
-                element.text('this is the gathermap directive');
+                    return scope.renderDataChange();
 
-                var chart = d3.intuinno.gathermap();
+                }, true);
 
-                chart.on('customHover', function(d, i) {
-                    console.log('customHover:', +d, i);
+                scope.$watch(function() {
+                    return angular.element(window)[0].innerWidth;
+                }, function() {
+                    return resize();
                 });
 
-                d3.select(element[0])
-                    .datum(dataset)
+
+                scope.renderDataChange = function() {
+
+                    chart.drawComments(scope.data);
+
+                }
+
+                var width = d3.select(element[0]).node().offsetWidth,
+                    height = width * 0.7;
+
+                var mapData;
+
+                var chart = d3.intuinno.gathermap()
+                    .scale(width)
+                    .size([width, height]);
+
+                var svg = d3.select(element[0])
+                    .append('svg')
+                    .attr('width', width)
+                    .attr('height', height)
                     .call(chart);
+
+                d3.json('data/us.json', function(error, us) {
+
+                    chart.drawStates(us);
+                    mapData = us;
+
+                });
+
+                function resize() {
+
+                    width = d3.select(element[0]).node().offsetWidth;
+                    height = width * 0.7;
+
+                    chart.scale(width)
+                        .size([width, height]);
+
+                    svg.attr('width', width)
+                        .attr('height', height)
+                        .call(chart);
+
+                    chart.reset();
+
+                    chart.drawStates(mapData);
+
+                    chart.drawComments(scope.data);
+                }
+
             }
         };
     });
@@ -40,149 +87,123 @@ d3.intuinno = {};
 
 d3.intuinno.gathermap = function module() {
 
-    var margin = {
-            top: 20,
-            right: 20,
-            bottom: 40,
-            left: 40
-        },
-        width = 500,
-        height = 500,
-        gap = 0,
-        ease = 'bounce';
-
-    var dispatch = d3.dispatch('customHover');
+    var dispatch = d3.dispatch('hover', 'drawEnd', 'brushing'),
+        projection,
+        path,
+        t,
+        s,
+        svg,
+        center,
+        scale,
+        size,
+        brush,
+        force;
 
     function exports(_selection) {
-        _selection.each(function(_data) {
 
-            var chartW = width - margin.left - margin.right,
-                chartH = height - margin.top - margin.bottom;
+        svg = _selection;
 
-            var x1 = d3.scale.ordinal()
-                .domain(_data.map(function(d, i) {
-                    return i;
-                }))
-                .rangeRoundBands([0, chartW], .1);
+        svg.datum([]);
 
-            var y1 = d3.scale.linear()
-                .domain([0, d3.max(_data, function(d, i) {
-                    return d;
-                })])
-                .range([chartH, 0]);
+        projection = d3.geo.albersUsa()
+            .scale(scale)
+            .translate([size[0] / 2, size[1] / 2]);
 
-            var xAxis = d3.svg.axis()
-                .scale(x1)
-                .orient('bottom');
+        path = d3.geo.path()
+            .projection(projection);
 
-            var yAxis = d3.svg.axis()
-                .scale(y1)
-                .orient('left');
-
-            var barW = chartW / _data.length;
-
-            var svg = d3.select(this)
-                .selectAll("svg")
-                .data([_data]);
-
-            svg.enter().append("svg")
-                .classed("chart", true);
-
-            var container = svg.append('g').classed('container-group', true);
-            container.append('g').classed('chart-group', true);
-            container.append('g').classed('x-axis-group axis', true);
-            container.append('g').classed('y-axis-group axis', true);
-
-
-            svg.transition().attr({
-                width: width,
-                height: height
-            });
-
-            svg.select('.container-group')
-                .attr({
-                    transform: 'translate(' + margin.left + ',' + margin.top + ')'
-                });
-
-            svg.select('.x-axis-group.axis')
-                .transition()
-                .ease(ease)
-                .attr({
-                    transform: 'translate(0,' + (chartH) + ')'
-                })
-                .call(xAxis);
-
-            svg.select('.y-axis-group.axis')
-                .transition()
-                .ease(ease)
-                .call(yAxis);
-
-            var gapSize = x1.rangeBand() / 100 * gap;
-            barW = x1.rangeBand() - gapSize;
-
-            var bars = svg.select('.chart-group')
-            				.selectAll('.bar')
-                			.data(function(d) {return d;});
-
-            bars.enter().append('rect')
-                .classed('bar', true)
-                .attr({
-                    x: chartW,
-                    width: barW,
-                    y: function(d, i) {
-                        return y1(d);
-                    },
-                    height: function(d, i) {
-                        return chartH - y1(d);
-                    }
-                })
-                .on('mouseover', dispatch.customHover);
-
-            bars.transition()
-                .ease(ease)
-                .attr({
-                    width: barW,
-                    x: function(d, i) {
-                        return x1(i) + gapSize / 2;
-                    },
-                    y: function(d, i) {
-                        return y1(d);
-                    },
-                    height: function(d, i) {
-                        return chartH - y1(d);
-                    }
-                });
-
-            bars.exit().transition().style({
-                opacity: 0
-            }).remove();
-
-        });
 
     }
 
-    exports.width = function(_x) {
-        if (!arguments.length) return width;
-        width = parseInt(_x);
+    exports.drawStates = function(_data) {
+        svg.append('path')
+            .attr('class', 'state')
+            .datum(topojson.mesh(_data, _data.objects.states))
+            .attr("d", path);
+    }
+
+    exports.drawComments = function(_data) {
+
+        var dataOnScreen = _data.filter(function(d) {
+            return projection([+d.Longitude, +d.Latitude]);
+        });
+
+
+        force = d3.layout.force()
+            .nodes(dataOnScreen)
+            .links([])
+            .gravity(0)
+            .charge(-4)
+            .on('tick', tick)
+            .start();
+
+        var node = svg.selectAll('.commentMapMark')
+            .data(dataOnScreen)
+            .enter()
+            .append('circle')
+            .attr('cx', function(d) {
+                return 0;
+            })
+            .attr('cy', function(d) {
+                return 0;
+            })
+            .attr('r', 2)
+            .attr('class', 'commentMapMark')
+            .on('mouseover', dispatch.hover)
+            .call(force.drag);
+
+        function tick(e) {
+            var k = .9 * e.alpha;
+            // console.log(k);
+
+            // Push nodes toward their designated focus.
+            // dataOnScreen.forEach(function(o, i) {
+            //     o.x += (projection([o.Longitude, o.Latitude])[0] - o.x) * k;
+            //     o.y += (projection([o.Longitude, o.Latitude])[1] - o.y) * k;
+            // });
+
+            node
+                .attr("cx", function(o) {
+                    return o.x += (projection([o.Longitude, o.Latitude])[0] - o.x) * k;
+                })
+                .attr("cy", function(o) {
+                    return o.y += (projection([o.Longitude, o.Latitude])[1] - o.y) * k;
+                });
+        }
+
+
+
+    }
+
+
+
+    exports.center = function(_x) {
+
+        if (!arguments.length) return center;
+
+        center = _x;
         return this;
     };
 
-    exports.height = function(_x) {
-        if (!arguments.length) return height;
-        height = parseInt(_x);
+    exports.scale = function(_x) {
+
+        if (!arguments.length) return scale;
+
+        scale = _x;
         return this;
     };
 
-    exports.gap = function(_x) {
-        if (!arguments.length) return gap;
-        gap = _x;
+    exports.size = function(_x) {
+
+        if (!arguments.length) return size;
+
+        size = _x;
         return this;
     };
 
-    exports.ease = function(_x) {
-        if (!arguments.length) return ease;
-        ease = _x;
-        return this;
+    exports.reset = function(_x) {
+
+        svg.selectAll('*').remove();
     };
 
     d3.rebind(exports, dispatch, 'on');

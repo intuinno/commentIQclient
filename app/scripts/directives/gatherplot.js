@@ -1307,6 +1307,11 @@
                                 outerWidth = outerWidth / (scope.config.dims.length) - 10;
 
                             }
+
+                            if (outerWidth === 0) {
+
+                                outerWidth = 200;
+                            }
                             // calculate the height
                             outerHeight = outerWidth / config.SVGAspectRatio;
 
