@@ -139,7 +139,9 @@
                         <span>{{tab.status}}</span> ({{filteredComment.length}})
                     </tab-heading>
                     <div class="commentList">
+
                         <dl>
+                        <br>
                             <dt dir-paginate-start='comment in filteredComment=(nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true | filter: searchText) | itemsPerPage: 5' pagination-id="tab.status">
                                 {{comment.display_name}}
                             </dt>

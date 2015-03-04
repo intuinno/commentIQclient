@@ -1,3 +1,15 @@
+.commentList > dl > dd {
+    border: 1px solid lightgray;
+    background-color: #f5f5f5;
+
+}
+
+.article {
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+}
+
+
 .commentList {
   max-height: 990px;
   overflow: auto;
