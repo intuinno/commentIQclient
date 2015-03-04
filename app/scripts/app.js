@@ -19,8 +19,9 @@ angular.module('commentiqApp', [
     'firebase.utils',
     'ui.bootstrap',
     'angularUtils.directives.dirPagination',
-    'ui.select'
+    'ui.select',
+    'angular-carousel'
   ])
 .config(function(paginationTemplateProvider) {
-    paginationTemplateProvider.setPath('bower_components/angular-utils-pagination/dirPagination.tpl.html');
+    paginationTemplateProvider.setPath('dirPagination.tpl.html');
 });

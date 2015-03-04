@@ -117,7 +117,7 @@ angular.module('commentiqApp')
 
         $scope.nomaConfig.SVGAspectRatio = 1.4;
 
-        $scope.overview = 'gathermap';
+        $scope.overview = 0;
 
         var computeScoreComment = function(criteria, comment) {
 

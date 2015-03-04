@@ -1,4 +1,34 @@
-.commentMapMark {
+ul[rn-carousel] {
+  width:100%;
+  height: 500px;
+}
+
+.chart-carousel {
+    background-size: cover;
+    position:relative;
+}
+
+.chart-carousel div {
+    width: 100%;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.6);
+    color:white;
+    padding: 5px;
+    /*position:absolute;*/
+    /*box-sizing: border-box;*/
+}
+
+
+.commentMapMark.Picked {
+
+  fill:red;
+  fill-opacity: 1;
+  stroke: red;
+  stroke-width: 1;
+
+}
+
+.commentMapMark.New {
 
   fill:lightgray;
   fill-opacity: 1;
@@ -6,6 +36,8 @@
   stroke-width: 1;
 
 }
+
+
 
 .gathermap {
     width: 100%;
@@ -324,7 +356,7 @@ border-color: #0000ff;*/
 }
 
 svg {
-    max-width: 100%;
+    width: 100%;
     height: 100%;
 
 }

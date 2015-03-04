@@ -133,8 +133,10 @@ d3.intuinno.gathermap = function module() {
             .nodes(dataOnScreen)
             .links([])
             .gravity(0)
-            .charge(-4)
+            .charge(-3)
             .on('tick', tick)
+            .theta(0.8)
+            .chargeDistance(30)
             .start();
 
         var node = svg.selectAll('.commentMapMark')
@@ -148,19 +150,15 @@ d3.intuinno.gathermap = function module() {
                 return 0;
             })
             .attr('r', 2)
-            .attr('class', 'commentMapMark')
+            .attr('class', function(d) {
+
+            	return d3.select(this).attr("class") + " commentMapMark " + d.status;
+            })
             .on('mouseover', dispatch.hover)
             .call(force.drag);
 
         function tick(e) {
             var k = .9 * e.alpha;
-            // console.log(k);
-
-            // Push nodes toward their designated focus.
-            // dataOnScreen.forEach(function(o, i) {
-            //     o.x += (projection([o.Longitude, o.Latitude])[0] - o.x) * k;
-            //     o.y += (projection([o.Longitude, o.Latitude])[1] - o.y) * k;
-            // });
 
             node
                 .attr("cx", function(o) {

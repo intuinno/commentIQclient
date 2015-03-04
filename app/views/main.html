@@ -16,29 +16,41 @@
 
             <br>
 
+
+
             <div class="btn-group">
 
-                <label class="btn btn-primary" ng-model="overview" btn-radio='"gatherplot"'> Custom </label>
-                <label class="btn btn-primary" ng-model="overview" btn-radio="'gathermap'"> Map </label>
+                <label class="btn btn-primary" ng-model="overview" btn-radio='1'> Custom </label>
+                <label class="btn btn-primary" ng-model="overview" btn-radio="0"> Map </label>
                 <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
             </div>
 
-            <div ng-show="overview=='gathermap'">
+            <ul rn-carousel-controls="true" rn-carousel rn-carousel-indicator="true" rn-carousel-index="overview">
 
-                <div  class="gathermap" data="nomaData"> </div>
 
-            </div>
 
-            <div ng-show="overview=='gatherplot'">
+                <li>
 
-                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
+                    <div>
 
-                </div>
+                        <div class="gathermap" data="nomaData"> </div>
 
-                <br>
+                    </div>
 
-                <div class="chart-simple-interface">
-                    <h5>Show me
+                </li>
+
+                <li>
+
+                    <div>
+
+                        <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
+
+                        </div>
+
+                        <br>
+
+                        <div class="chart-simple-interface">
+                            <h5>Show me
 
                             <select ng-model="nomaConfig.xDim" ng-options="f for f in nomaConfig.dims">
 
@@ -64,14 +76,18 @@
                         </h5>
 
 
-                    <div ng-class="{tryMe: isRelativeSelectFocused}">
-                        <h6>
+                            <div ng-class="{tryMe: isRelativeSelectFocused}">
+                                <h6>
                                 <input type='checkbox' ng-model="nomaConfig.relativeMode" ng-trueValue="relative" ng-false-value="'absolute'">Check this to make it easy to compare groups of different sizes.</h6>
 
+                            </div>
+
+                        </div>
                     </div>
 
-                </div>
-            </div>
+                </li>
+
+            </ul>
 
         </div>
         <div class="col-sm-6">
@@ -153,11 +169,14 @@
                     <div class="commentList">
                         <dl>
                             <dt dir-paginate-start='comment in filteredComment=(nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true | filter: searchText) | itemsPerPage: 5' pagination-id="tab.status">
-                                {{comment.display_name}}
+                                {{comment.DisplayName}}
                             </dt>
-                            <br>
+                            
+
 
                             <dd>
+
+
                                 <div ng-bind-html="comment.commentBody"></div>
 
                                 <br> score = {{comment.score}}
@@ -180,11 +199,15 @@
                     <div class="commentList">
                         <dl>
                             <dt dir-paginate-start='comment in nomaData |orderBy:"score":true| itemsPerPage: 5' pagination-id="All">
-                                {{comment.display_name}}
+                                {{comment.DisplayName}}
                             </dt>
-                            <br>
+                            
+
 
                             <dd>
+
+                                {{comment.display_name}}
+                                <br>
                                 <div ng-bind-html="comment.commentBody"></div>
                                 <br> score = {{comment.score}}
                                 <br> brush = {{comment.selected}}
