@@ -2,15 +2,15 @@
 
 /**
  * @ngdoc directive
- * @name commentiqApp.directive:gathermap
+ * @name commentiqApp.directive:stackedBar
  * @description
- * # gathermap
+ * # stackedBar
  */
 angular.module('commentiqApp')
-    .directive('gathermap', function() {
-        return {
-            restrict: 'EAC',
-            scope: {
+  .directive('stackedBar', function () {
+    return {
+      restrict: 'EAC',
+                  scope: {
                 data: "=",
                 config: "=",
                 context: "="
@@ -38,11 +38,11 @@ angular.module('commentiqApp')
                 }
 
                 var width = d3.select(element[0]).node().offsetWidth,
-                    height = width * 0.7;
+                    height = width * 0.1;
 
                 var mapData;
 
-                var chart = d3.intuinno.gathermap()
+                var chart = d3.intuinno.stackedBar()
                     .scale(width)
                     .size([width, height]);
 
@@ -85,99 +85,38 @@ angular.module('commentiqApp')
 
 d3.intuinno = {};
 
-d3.intuinno.gathermap = function module() {
+d3.intuinno.stackedBar = function module() {
 
-    var dispatch = d3.dispatch('hover', 'drawEnd', 'brushing'),
-        projection,
-        path,
-        t,
-        s,
-        svg,
-        center,
-        scale,
-        size,
-        brush,
-        force;
+    var margin = {top:20, right: 20, bottom:40, left, 40},
+    	width = 500,
+    	height = 50,
+    	gap = 0, 
+    	ease = 'bounce';
+
+    var svg;
+
+    var dispatch = d3.dispatch('customHover');
 
     function exports(_selection) {
 
-        svg = _selection;
+        _selection.each(function(_data) {
 
-        svg.datum([]);
+        	var chartW = width - margin.left - margin.right, 
+        		chartH = height - margin.top - margin.bottom;
 
-        projection = d3.geo.albersUsa()
-            .scale(scale)
-            .translate([size[0] / 2, size[1] / 2]);
-
-        path = d3.geo.path()
-            .projection(projection);
+        	var x1 = d3.scale.linear()
+        			.domain([0, ])
+        })
 
 
     }
 
-    exports.drawStates = function(_data) {
-        svg.append('path')
-            .attr('class', 'state')
-            .datum(topojson.mesh(_data, _data.objects.states))
-            .attr("d", path);
+    function getSum(data) {
+
+    	var sum = d3.sum(data, function(d) { }
     }
 
-    exports.drawComments = function(_data) {
-
-        var dataOnScreen = _data.filter(function(d) {
-            return projection([+d.Longitude, +d.Latitude]);
-        });
-
-
-        force = d3.layout.force()
-            .nodes(dataOnScreen)
-            .links([])
-            .gravity(0)
-            .charge(-3)
-            .on('tick', tick)
-            .theta(0.8)
-            .chargeDistance(30)
-            .start();
-
-        var node = svg.selectAll('.commentMapMark')
-            .data(dataOnScreen);
-
-            node.exit().remove();
-
-            node.enter()
-            .append('circle');
-
-            node.attr('cx', function(d) {
-                return 0;
-            })
-            .attr('cy', function(d) {
-                return 0;
-            })
-            .attr('r', 2)
-            .attr('class', function(d) {
-
-            	return "commentMapMark " + d.status;
-            })
-            .on('mouseover', dispatch.hover)
-            .call(force.drag);
-
-        function tick(e) {
-            var k = .9 * e.alpha;
-
-            node
-                .attr("cx", function(o) {
-                    return o.x += (projection([o.Longitude, o.Latitude])[0] - o.x) * k;
-                })
-                .attr("cy", function(o) {
-                    return o.y += (projection([o.Longitude, o.Latitude])[1] - o.y) * k;
-                });
-        }
-
-
-
-    }
-
-
+   
 
     exports.center = function(_x) {
 

@@ -18,12 +18,14 @@
 
 
 
-            <div class="btn-group">
+            <div class="overviewButton btn-group">
 
                 <label class="btn btn-primary" ng-model="overview" btn-radio='1'> Custom </label>
                 <label class="btn btn-primary" ng-model="overview" btn-radio="0"> Map </label>
                 <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
             </div>
+
+            <br>
 
             <ul rn-carousel-controls="true" rn-carousel rn-carousel-indicator="true" rn-carousel-index="overview">
 
@@ -113,11 +115,14 @@
                 Presets:
                 <select class="btn btn-primary dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
                 </select>
-                <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
-                    <i class="fa fa-cog"></i>
-                </a>
+               
             </div>
 
+            <br>
+
+            <div stacked-bar></div> <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                    <i class="fa fa-cog"></i>
+                </a>
             <br>
 
 

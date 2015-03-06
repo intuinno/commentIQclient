@@ -1,3 +1,12 @@
+stacked-bar {
+
+  width:100%;
+}
+
+.overviewButton {
+  margin-bottom: 20px;
+}
+
 ul[rn-carousel] {
   width:100%;
   height: 500px;
@@ -19,18 +28,24 @@ ul[rn-carousel] {
 }
 
 
+.commentMapMark.Accepted {
+  fill:steelblue;
+}
+
+.commentMapMark.Rejected {
+  fill:white;
+}
+
 .commentMapMark.Picked {
-
   fill:red;
-  fill-opacity: 1;
-  stroke: red;
-  stroke-width: 1;
-
 }
 
 .commentMapMark.New {
-
   fill:lightgray;
+}
+
+.commentMapMark{
+
   fill-opacity: 1;
   stroke: gray;
   stroke-width: 1;
@@ -87,8 +102,6 @@ rect.hidden {
 .nav-pic {
   margin: -2px 5px 0 0;
   max-height: 20px;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
   border-radius: 100px;
 }
 
@@ -97,8 +110,6 @@ rect.hidden {
 .post {
   background: #fff;
   padding:15px 0;
-  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
@@ -119,8 +130,6 @@ rect.hidden {
 .prof-img{
   width:100%;
   max-width:100px;
-  -webkit-border-radius: 100px;
-  -moz-border-radius: 100px;
   border-radius: 100px;
 }
 
@@ -143,11 +152,7 @@ rect.hidden {
   margin:0 auto;
   background: #fff;
   padding:1px 25px 25px 25px;
-  -moz-box-shadow: 0 0 5px rgba(0,0,0,0.2);
-  -webkit-box-shadow: 0 0 5px rgba(0,0,0,0.2);
   box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    -webkit-border-radius: 10px;
-  -moz-border-radius: 10px;
   border-radius: 10px;
 }
 
