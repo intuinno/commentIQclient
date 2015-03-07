@@ -286,6 +286,21 @@ angular.module('commentiqApp')
             });
         };
 
+        $scope.openHelpModalForCriteria = function() {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'helpCriteriaModal.html',
+                controller: 'HelpCriteriaModalCtrl',
+                size: 'lg',
+                resolve: {
+                    criterias: function() {
+                        return $scope.criterias;
+                    }
+                }
+            });
+
+        };
+
 
         $scope.loadData = function() {
 
@@ -340,4 +355,3 @@ angular.module('commentiqApp')
 
 
     });
-

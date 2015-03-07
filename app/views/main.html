@@ -120,11 +120,40 @@
                     <h3 class="modal-title">Please enter the name for new setting</h3>
                 </div>
                 <div class="modal-body">
-                    New name: <input type="text" ng-model='settingName' class="form-control" select-on-click placeholder={{settingName}}>
+                    New name:
+                    <input type="text" ng-model='settingName' class="form-control" select-on-click placeholder={{settingName}}>
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn-primary" ng-click="ok()">OK</button>
                     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                </div>
+            </script>
+
+
+            <script type="text/ng-template" id="helpCriteriaModal.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">Help for Criteria</h3>
+                </div>
+                <div class="modal-body">
+
+                    <dl>
+
+                        <dt ng-repeat-start="criteria in criterias">
+                        <br>
+                            {{criteria.name}}
+
+                        </dt>
+                        
+                        <dd ng-repeat-end>
+
+                            {{criteria.help_text}}
+                            </dd>
+
+
+                    </dl>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="ok()">OK</button>
                 </div>
             </script>
 
@@ -139,7 +168,7 @@
                         <h4> Criteria based on {{scoreModel}} score</h4>
                         <ul>
                             <li ng-repeat="criteria in criterias | filter:{model:scoreModel}">
-                                <span popover="{{criteria.help_text}}" popover-trigger="mouseenter" >{{criteria.display_text}} </span> : {{currentCategory.weights[criteria.name]}}
+                                <span popover="{{criteria.help_text}}" popover-trigger="mouseenter">{{criteria.display_text}} <a href="" class="btn btn-link btn-default" ng-click="openHelpModalForCriteria()"><i class="fa fa-question-circle"></i> </a> </span> : {{currentCategory.weights[criteria.name]}}
 
                                 <input type="range" ng-model='currentCategory.weights[criteria.name]' min="0" max="100" required>
                             </li>
