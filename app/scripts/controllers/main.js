@@ -157,23 +157,7 @@ angular.module('commentiqApp')
         }];
 
 
-        $scope.currentCategory = {
-            name: 'Best based on comment',
-            weights: {
-                ArticleRelevance: 80,
-                ConversationalRelevance: 70,
-                AVGcommentspermonth: 0,
-                AVGBrevity: 0,
-                AVGPersonalXP: 0,
-                AVGPicks: 0,
-                AVGReadability: 0,
-                AVGRecommendationScore: 0,
-                Brevity: 60,
-                PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
-            }
-        };
+        $scope.currentCategory = $scope.presetCategory[0];
 
         $scope.nomaData = [];
         $scope.isSettingCollapsed = true;
@@ -223,6 +207,19 @@ angular.module('commentiqApp')
             return score;
         };
 
+        var computeScore = function(currentCategory, comment) {
+
+            var criterias = d3.keys(currentCategory.weights);
+
+            var score = d3.sum(criterias, function(criteria) {
+
+                return comment[criteria] * currentCategory.weights[criteria];
+
+            });
+
+            return score;
+        };
+
         $scope.$watch(function() {
             return $scope.currentCategory;
         }, function(newVals, oldVals) {
@@ -243,20 +240,12 @@ angular.module('commentiqApp')
 
         var updateScore = function() {
 
-            if ($scope.baseModel === 'Comment') {
+            $scope.nomaData.forEach(function(d) {
 
-                $scope.nomaData.forEach(function(d) {
+                d.score = computeScore($scope.currentCategory, d);
+            });
 
-                    d.score = computeScoreComment($scope.currentCategory, d);
-                });
-            } else if ($scope.baseModel === 'User') {
 
-                $scope.nomaData.forEach(function(d) {
-
-                    d.score = computeScoreUser($scope.currentCategory, d);
-                });
-
-            }
         };
 
         $scope.saveCurrentSetting = function() {
@@ -322,7 +311,6 @@ angular.module('commentiqApp')
                 $scope.nomaData = tdata;
 
                 updateScore();
-
 
                 $scope.nomaConfig.dims = d3.keys(tdata[0]);
 

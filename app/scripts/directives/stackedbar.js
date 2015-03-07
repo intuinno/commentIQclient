@@ -7,16 +7,19 @@
  * # stackedBar
  */
 angular.module('commentiqApp')
-  .directive('stackedBar', function () {
-    return {
-      restrict: 'EAC',
-                  scope: {
+    .directive('stackedBar', function() {
+        return {
+            restrict: 'EAC',
+            scope: {
                 data: "=",
                 config: "=",
-                context: "="
+                context: "=",
+                help: "="
             },
 
             link: function postLink(scope, element, attrs) {
+
+                var criteriaData = mixDataForChart(scope.data, scope.help);
 
                 scope.$watch('data', function(newVals, oldVals) {
 
@@ -30,52 +33,46 @@ angular.module('commentiqApp')
                     return resize();
                 });
 
-
                 scope.renderDataChange = function() {
 
-                    chart.drawComments(scope.data);
+                    criteriaData = mixDataForChart(scope.data, scope.help);
+
+                    domParent.datum(criteriaData)
+                        .call(chart);
 
                 }
 
-                var width = d3.select(element[0]).node().offsetWidth,
-                    height = width * 0.1;
-
-                var mapData;
+                var width = d3.select(element[0]).node().offsetWidth - 30,
+                    height = 50;
 
                 var chart = d3.intuinno.stackedBar()
-                    .scale(width)
                     .size([width, height]);
 
-                var svg = d3.select(element[0])
-                    .append('svg')
-                    .attr('width', width)
-                    .attr('height', height)
+                var domParent = d3.select(element[0])
+                    .datum(criteriaData)
                     .call(chart);
-
-                d3.json('data/us.json', function(error, us) {
-
-                    chart.drawStates(us);
-                    mapData = us;
-
-                });
 
                 function resize() {
 
-                    width = d3.select(element[0]).node().offsetWidth;
-                    height = width * 0.7;
+                    width = d3.select(element[0]).node().offsetWidth - 30;
+                    height = 50;
 
-                    chart.scale(width)
-                        .size([width, height]);
+                    chart.size([width, height]);
 
-                    svg.attr('width', width)
-                        .attr('height', height)
-                        .call(chart);
+                    domParent.call(chart);
 
-                    chart.reset();
+                }
 
-                    chart.drawStates(mapData);
+                function mixDataForChart(data, help) {
 
-                    chart.drawComments(scope.data);
+                    var mixedData = angular.copy(help);
+
+                    var mixedData = mixedData.map(function(d) {
+                        d.value = data.weights[d.name];
+                        return d;
+                    })
+
+                    return mixedData;
                 }
 
             }
@@ -86,13 +83,20 @@ d3.intuinno = d3.intuinno || {};
 
 d3.intuinno.stackedBar = function module() {
 
-    var margin = {top:20, right: 20, bottom:40, left: 40},
-    	width = 500,
-    	height = 50,
-    	gap = 0, 
-    	ease = 'bounce';
+    var margin = {
+            top: 10,
+            right: 10,
+            bottom: 10,
+            left: 10
+        },
+        width = 500,
+        height = 80,
+        gap = 0,
+        ease = 'bounce';
 
     var svg;
+
+    var data;
 
     var dispatch = d3.dispatch('customHover');
 
@@ -100,50 +104,100 @@ d3.intuinno.stackedBar = function module() {
 
         _selection.each(function(_data) {
 
-        	var chartW = width - margin.left - margin.right, 
-        		chartH = height - margin.top - margin.bottom;
+            var chartW = width - margin.left - margin.right,
+                chartH = height - margin.top - margin.bottom;
 
-        	// var x1 = d3.scale.linear()
-        	// 		.domain([0, ])
+            var nonZeroData = _data.filter(function(d) {
+                return d.value !== 0;
+            });
+
+            var x0 = 0
+
+            nonZeroData.forEach(function(d) {
+                d.x1 = x0;
+                x0 = d.x1 + Number(d.value);
+            })
+
+            var xScale = d3.scale.linear()
+                .domain([0, d3.sum(nonZeroData, function(d) {
+                    return d.value;
+                })])
+                .range([0, chartW]);
+
+            var color = d3.scale.category20();
+
+            var tip = d3.tip().attr('class','d3-tip')
+            				.offset([-10, 0])
+            				.html(function(d) { return d.display_text;});
+
+            if (!svg) {
+                svg = d3.select(this)
+                    .append("svg")
+                    .classed("chart", true);
+                var container = svg.append("g").classed("container-group", true);
+                container.append("g").classed("chart-group", true);
+            }
+
+            svg.transition().attr({
+                width: width,
+                height: height
+            });
+            svg.select(".container-group")
+                .attr({
+                    transform: "translate(" + margin.left + "," + margin.top + ")"
+                });
+
+            svg.call(tip);
+
+
+            var bars = svg.select(".chart-group")
+                .selectAll(".bar")
+                .data(nonZeroData, function(d) {
+                    return d.name;
+                });
+
+            bars.enter().append("rect")
+                .classed("bar", true)
+                .on("mouseover", function(d) {
+
+
+
+                    dispatch.customHover(d);
+                    tip.show(d);
+                })
+                .on("mouseout",tip.hide)
+                .style("fill", function(d) {
+                    return color(d.name);
+                });
+
+            bars.attr({
+                x: function(d) {
+                    return xScale(d.x1);
+                },
+                height: chartH,
+                y: 0,
+                width: function(d) {
+                    return xScale(d.value);
+                }
+            });
+
+
+            bars.exit().transition().style({
+                opacity: 0
+            }).remove();
+
         })
 
 
     }
 
-    // function getSum(data) {
-
-    // 	var sum = d3.sum(data, function(d) { };
-    // }
-
-   
-
-    exports.center = function(_x) {
-
-        if (!arguments.length) return center;
-
-        center = _x;
-        return this;
-    };
-
-    exports.scale = function(_x) {
-
-        if (!arguments.length) return scale;
-
-        scale = _x;
-        return this;
-    };
-
     exports.size = function(_x) {
 
         if (!arguments.length) return size;
 
-        size = _x;
+        width = _x[0];
+        height = _x[1];
         return this;
-    };
-
-    exports.reset = function(_x) {
-
-        svg.selectAll('*').remove();
     };
 
     d3.rebind(exports, dispatch, 'on');

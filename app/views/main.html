@@ -104,16 +104,15 @@
             </div>
 
             <br>
-            <!-- 
-            <div stacked-bar></div>
-            <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
-                <i class="fa fa-cog"></i>
-            </a>
-            <br> -->
 
-            <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
-                <i class="fa fa-cog"></i>
-            </a>
+            <div class="criteriaBarContainer">
+
+                <div class="criteriaBar" stacked-bar help="criterias" data="currentCategory"></div>
+                <a class="pull-right" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                    <i class="fa fa-cog fa-2x criteriaBarConfig"></i>
+                </a>
+
+            </div>
 
             <script type="text/ng-template" id="settingNameModal.html">
                 <div class="modal-header">
@@ -139,15 +138,14 @@
                     <dl>
 
                         <dt ng-repeat-start="criteria in criterias">
-                        <br>
-                            {{criteria.name}}
+                            <br> {{criteria.name}}
 
                         </dt>
-                        
+
                         <dd ng-repeat-end>
 
                             {{criteria.help_text}}
-                            </dd>
+                        </dd>
 
 
                     </dl>
@@ -159,6 +157,7 @@
 
             <div collapse="isSettingCollapsed">
                 <div class="well">
+                    <a href="" class="btn btn-link btn-default pull-right" ng-click="isSettingCollapsed=true"><i class="fa fa-times"></i> Close</a>
 
                     <a href="" class="btn btn-link btn-default pull-right" ng-click="saveCurrentSetting()"><i class="fa fa-floppy-o"></i> Save current setting</a>
 

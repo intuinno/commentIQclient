@@ -153,7 +153,7 @@ d3.intuinno.gathermap = function module() {
             .attr('cy', function(d) {
                 return 0;
             })
-            .attr('r', 2)
+            .attr('r', 1)
             .attr('class', function(d) {
 
             	return "commentMapMark " + d.status;
