@@ -139,7 +139,8 @@
                         <h4> Criteria based on {{scoreModel}} score</h4>
                         <ul>
                             <li ng-repeat="criteria in criterias | filter:{model:scoreModel}">
-                                {{criteria.display_text}} : {{currentCategory.weights[criteria.name]}}
+                                <span popover="{{criteria.help_text}}" popover-trigger="mouseenter" >{{criteria.display_text}} </span> : {{currentCategory.weights[criteria.name]}}
+
                                 <input type="range" ng-model='currentCategory.weights[criteria.name]' min="0" max="100" required>
                             </li>
                         </ul>
