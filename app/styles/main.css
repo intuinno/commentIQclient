@@ -84,15 +84,15 @@ ul[rn-carousel] {
 }
 .commentMapMark.Rejected {
     fill: white;
-    stroke: white;
+    stroke: lightgray;
 }
 .commentMapMark.Picked {
     fill: red;
     stroke: red;
 }
 .commentMapMark.New {
-    fill: lightgray;
-    stroke: lightgray;
+    fill: gray;
+    stroke: gray;
 }
 .commentMapMark {
     fill-opacity: 1;

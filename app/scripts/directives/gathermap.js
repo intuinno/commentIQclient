@@ -71,7 +71,7 @@ angular.module('commentiqApp')
                         .attr('height', height)
                         .call(chart);
 
-                    chart.reset();
+                    // chart.reset();
 
                     chart.drawStates(mapData);
 
@@ -97,11 +97,27 @@ d3.intuinno.gathermap = function module() {
         scale,
         size,
         brush,
-        force;
+        force,
+        legend,
+        stateGroup,
+        nodeGroup,
+        legendGroup;
+
+    var legendRectSize = 18; // NEW
+    var legendSpacing = 4;
 
     function exports(_selection) {
 
         svg = _selection;
+
+        var container = svg.append("g").classed("container-group", true);
+        container.append("g").classed("map-group", true);
+        container.append("g").classed("comment-group", true);
+
+        container.append("g").classed("legend-group", true);
+
+
+
 
         svg.datum([]);
 
@@ -112,11 +128,58 @@ d3.intuinno.gathermap = function module() {
         path = d3.geo.path()
             .projection(projection);
 
+        exports.drawLegends();
+
+
+    }
+
+    exports.drawLegends = function() {
+
+
+
+        var statusArray = ['New', 'Accepted', 'Rejected', 'Picked'];
+
+        svg.select('.legend-group')
+            .selectAll('*').remove();
+
+        
+        legend = svg.select('.legend-group')
+            .selectAll('.legend') // NEW
+            .data(statusArray) // NEW
+            .enter() // NEW
+            .append('g') // NEW
+            .attr('class', 'legend') // NEW
+            .attr('transform', function(d, i) { // NEW
+                var height = legendRectSize + legendSpacing; // NEW
+                var offset = size[0]/statusArray.length;
+                var vert = size[1] - height; // NEW
+                var horz = i * offset; // NEW
+                return 'translate(' + horz + ',' + vert + ')'; // NEW
+            }); // NEW
+
+        legend.append('rect') // NEW
+            .attr('width', legendRectSize) // NEW
+            .attr('height', legendRectSize) // NEW
+            .attr('class', function(d) {
+
+                return "commentMapMark " + d;
+            })
+
+        legend.append('text') // NEW
+            .attr('x', legendRectSize + legendSpacing) // NEW
+            .attr('y', legendRectSize - legendSpacing) // NEW
+            .text(function(d) {
+                return d;
+            }); // NEW
 
     }
 
     exports.drawStates = function(_data) {
-        svg.append('path')
+        svg.select('.map-group')
+            .selectAll('*').remove();
+
+        svg.select('.map-group')
+            .append('path')
             .attr('class', 'state')
             .datum(topojson.mesh(_data, _data.objects.states))
             .attr("d", path);
@@ -139,15 +202,18 @@ d3.intuinno.gathermap = function module() {
             .chargeDistance(30)
             .start();
 
-        var node = svg.selectAll('.commentMapMark')
-            .data(dataOnScreen);
+        var node = svg.select('.comment-group')
+            .selectAll('.commentMapMark')
+            .data(dataOnScreen,function(d){
+                return d.CommentSequence;
+            });
 
-            node.exit().remove();
+        node.exit().remove();
 
-            node.enter()
+        node.enter()
             .append('circle');
 
-            node.attr('cx', function(d) {
+        node.attr('cx', function(d) {
                 return 0;
             })
             .attr('cy', function(d) {
@@ -156,7 +222,7 @@ d3.intuinno.gathermap = function module() {
             .attr('r', 1)
             .attr('class', function(d) {
 
-            	return "commentMapMark " + d.status;
+                return "commentMapMark " + d.status;
             })
             .on('mouseover', dispatch.hover)
             .call(force.drag);

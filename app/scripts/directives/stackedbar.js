@@ -127,8 +127,7 @@ d3.intuinno.stackedBar = function module() {
             var color = d3.scale.category20();
 
             var tip = d3.tip().attr('class','d3-tip')
-            				.offset([-10, 0])
-            				.html(function(d) { return d.display_text;});
+            				.offset([-10, 0]).html(function(d) { return d.display_text;});
 
             if (!svg) {
                 svg = d3.select(this)
