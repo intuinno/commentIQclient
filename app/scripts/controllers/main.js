@@ -27,6 +27,8 @@ angular.module('commentiqApp')
 
         $scope.scoreModels = ['comment', 'user'];
 
+        $scope.pickTags = ['well-written', 'informative', 'personal experience', 'critical','humorous'];
+
         $scope.criterias = [{
             name: 'ArticleRelevance',
             display_text: "Article relevance",
@@ -286,6 +288,31 @@ angular.module('commentiqApp')
                         return $scope.criterias;
                     }
                 }
+            });
+
+        };
+
+        $scope.pickReason = function(comment) {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'pickReason.html',
+                controller: 'PickReasonModalCtrl',
+                size: 'sm',
+                resolve: {
+                    reasons: function() {
+                        return $scope.pickTags;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(result) {
+
+                $log.info(result);
+
+                comment.pickTags = result;
+
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
             });
 
         };
