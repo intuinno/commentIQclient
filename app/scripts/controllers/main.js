@@ -8,7 +8,7 @@
  * Controller of the commentiqApp
  */
 angular.module('commentiqApp')
-    .controller('MainCtrl', function($scope) {
+    .controller('MainCtrl', function($scope, $modal, $log) {
 
         $scope.statusArray = ['New', 'Accepted', 'Rejected', 'Picked'];
 
@@ -23,67 +23,157 @@ angular.module('commentiqApp')
             status: 'Picked'
         }];
 
+        $scope.settingName = 'New Setting';
+
+        $scope.scoreModels = ['comment', 'user'];
+
+        $scope.criterias = [{
+            name: 'ArticleRelevance',
+            display_text: "Article relevance",
+            help_text: "This score represents how much relevant the comment is about the article.",
+            model: "comment"
+        }, {
+            name: 'ConversationalRelevance',
+            display_text: "Conversational Relevance",
+            help_text: "This score represents how much relevant the comment is with the preceeding comments.",
+            model: "comment"
+        }, {
+            name: 'AVGcommentspermonth',
+            display_text: "Average comments per month by writer",
+            help_text: "This score represents how many comments per month the user has written so far.",
+            model: "user"
+        }, {
+            name: 'AVGBrevity',
+            display_text: "Average Brevity of Comments by writer",
+            help_text: "This score represents how long the comments by writer is on average.",
+            model: "user"
+        }, {
+            name: 'AVGPersonalXP',
+            display_text: "Average personal experience by user",
+            help_text: "This score represents how personal the average comments by the writer are.",
+            model: "user"
+        }, {
+            name: 'AVGPicks',
+            display_text: "Average percentage of Pick",
+            help_text: "This score represents what is the average pick rate of comments written by the user.",
+            model: "user"
+        }, {
+            name: 'AVGReadability',
+            display_text: "Average readability",
+            help_text: "This score represents how readable are the comments written by the user in general.",
+            model: "user"
+        }, {
+            name: 'AVGRecommendationScore',
+            display_text: "Average recommendation score",
+            help_text: "This score represents on average how many recommendation the comments by the user have gotten. ",
+            model: "user"
+        }, {
+            name: 'Brevity',
+            display_text: "Brevity of comments",
+            help_text: "This score represents how short the comment is.",
+            model: "comment"
+        }, {
+            name: 'PersonalXP',
+            display_text: "Personal experience in the comment",
+            help_text: "This score represents how much the comments contains the personal experience.",
+            model: "comment"
+        }, {
+            name: 'Readability',
+            display_text: "Readability of the comment",
+            help_text: "This score represents how readable the comment is.",
+            model: "comment"
+        }, {
+            name: 'RecommendationScore',
+            display_text: "Recommendation Score",
+            help_text: "This score represents how many recommendation the comment has received.",
+            model: "comment"
+        }];
+
 
         $scope.presetCategory = [{
-            name: 'General',
+            name: 'Best based on comment',
             weights: {
-                AR: 80,
-                CR: 70,
-                personal: 60,
-                readability: 50,
-                recommend: 40,
-                brevity: 30,
-                userActivity: 80,
-                userBrevity: 70,
-                userPersonal: 60,
-                userPicks: 50,
-                userRecommend: 40,
-                userReadability: 30
+                ArticleRelevance: 80,
+                ConversationalRelevance: 70,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
+                AVGPicks: 0,
+                AVGReadability: 0,
+                AVGRecommendationScore: 0,
+                Brevity: 60,
+                PersonalXP: 50,
+                Readability: 40,
+                RecommendationScore: 30
             }
         }, {
-            name: 'Informative',
+            name: 'Informative comment',
             weights: {
-                AR: 81,
-                CR: 71,
-                personal: 61,
-                readability: 51,
-                recommend: 41,
-                brevity: 31,
-                userActivity: 81,
-                userBrevity: 71,
-                userPersonal: 61,
-                userPicks: 51,
-                userRecommend: 41,
-                userReadability: 31
+                ArticleRelevance: 71,
+                ConversationalRelevance: 70,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
+                AVGPicks: 0,
+                AVGReadability: 0,
+                AVGRecommendationScore: 0,
+                Brevity: 60,
+                PersonalXP: 50,
+                Readability: 40,
+                RecommendationScore: 30
             }
         }, {
-            name: 'Unexpected',
+            name: 'Unexpected comment',
             weights: {
-                AR: 82,
-                CR: 72,
-                personal: 62,
-                readability: 52,
-                recommend: 42,
-                brevity: 32,
-                userActivity: 82,
-                userBrevity: 73,
-                userPersonal: 64,
-                userPicks: 54,
-                userRecommend: 44,
-                userReadability: 34
+                ArticleRelevance: 62,
+                ConversationalRelevance: 70,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
+                AVGPicks: 0,
+                AVGReadability: 0,
+                AVGRecommendationScore: 0,
+                Brevity: 60,
+                PersonalXP: 50,
+                Readability: 40,
+                RecommendationScore: 30
+            },
+        }, {
+            name: 'Written by best user',
+            weights: {
+                ArticleRelevance: 0,
+                ConversationalRelevance: 0,
+                AVGcommentspermonth: 90,
+                AVGBrevity: 80,
+                AVGPersonalXP: 90,
+                AVGPicks: 90,
+                AVGReadability: 90,
+                AVGRecommendationScore: 90,
+                Brevity: 0,
+                PersonalXP: 0,
+                Readability: 0,
+                RecommendationScore: 0
             }
-        }]
+        }];
 
 
-        $scope.baseModel = 'Comment';
-        $scope.sortCriteria = {
-            AR: 80,
-            CR: 70,
-            personal: 60,
-            readability: 50,
-            recommend: 40
+        $scope.currentCategory = {
+            name: 'Best based on comment',
+            weights: {
+                ArticleRelevance: 80,
+                ConversationalRelevance: 70,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
+                AVGPicks: 0,
+                AVGReadability: 0,
+                AVGRecommendationScore: 0,
+                Brevity: 60,
+                PersonalXP: 50,
+                Readability: 40,
+                RecommendationScore: 30
+            }
         };
-        $scope.currentCategory = $scope.presetCategory[0];
 
         $scope.nomaData = [];
         $scope.isSettingCollapsed = true;
@@ -169,6 +259,33 @@ angular.module('commentiqApp')
             }
         };
 
+        $scope.saveCurrentSetting = function() {
+
+            var modalInstance = $modal.open({
+                templateUrl: 'settingNameModal.html',
+                controller: 'settingNameModalCtrl',
+                size: 'sm',
+                resolve: {
+                    settingName: function() {
+                        return $scope.currentCategory.name;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function(settingName) {
+
+                $log.info(settingName);
+
+                var newSetting = angular.copy($scope.currentCategory);
+                newSetting.name = settingName;
+
+                $scope.presetCategory.push(newSetting);
+
+            }, function() {
+                $log.info('Modal dismissed at: ' + new Date());
+            });
+        };
+
 
         $scope.loadData = function() {
 
@@ -186,7 +303,7 @@ angular.module('commentiqApp')
                     d.commentBody = d.commentBody.replace(/\\/g, "");
                 });
 
-                
+
                 $scope.nomaData = tdata;
 
                 updateScore();
@@ -223,3 +340,4 @@ angular.module('commentiqApp')
 
 
     });
+
