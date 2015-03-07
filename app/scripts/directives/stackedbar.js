@@ -82,12 +82,11 @@ angular.module('commentiqApp')
         };
     });
 
-
-d3.intuinno = {};
+d3.intuinno = d3.intuinno || {};
 
 d3.intuinno.stackedBar = function module() {
 
-    var margin = {top:20, right: 20, bottom:40, left, 40},
+    var margin = {top:20, right: 20, bottom:40, left: 40},
     	width = 500,
     	height = 50,
     	gap = 0, 
@@ -104,17 +103,17 @@ d3.intuinno.stackedBar = function module() {
         	var chartW = width - margin.left - margin.right, 
         		chartH = height - margin.top - margin.bottom;
 
-        	var x1 = d3.scale.linear()
-        			.domain([0, ])
+        	// var x1 = d3.scale.linear()
+        	// 		.domain([0, ])
         })
 
 
     }
 
-    function getSum(data) {
+    // function getSum(data) {
 
-    	var sum = d3.sum(data, function(d) { }
-    }
+    // 	var sum = d3.sum(data, function(d) { };
+    // }
 
    
 

@@ -96,66 +96,54 @@
 
             <br>
 
-            <div class="btn-group">
-
-                <label class="btn btn-primary" ng-model="baseModel" btn-radio='"User"'> User </label>
-                <label class="btn btn-primary" ng-model="baseModel" btn-radio="'Comment'"> Comment </label>
-                <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
-            </div>
-
-
-            <!--             <div>
-                <label class=" control-label"> Presets: </label>
-                <div class=" selectContainer">
-                    <select ng-model="currentCategory" ng-options="f.name for f in presetCategory">
-                    </select>
-                </div>
-            </div> -->
-            <div class='pull-right'>
-                Presets:
+            <div>
+                Presets for Ranking:
                 <select class="btn btn-primary dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
                 </select>
-               
+
             </div>
 
             <br>
+            <!-- 
+            <div stacked-bar></div>
+            <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                <i class="fa fa-cog"></i>
+            </a>
+            <br> -->
 
-            <div stacked-bar></div> <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
-                    <i class="fa fa-cog"></i>
-                </a>
-            <br>
+            <a class="" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                <i class="fa fa-cog"></i>
+            </a>
 
-
+            <script type="text/ng-template" id="settingNameModal.html">
+                <div class="modal-header">
+                    <h3 class="modal-title">Please enter the name for new setting</h3>
+                </div>
+                <div class="modal-body">
+                    New name: <input type="text" ng-model='settingName' class="form-control" select-on-click placeholder={{settingName}}>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" ng-click="ok()">OK</button>
+                    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+                </div>
+            </script>
 
             <div collapse="isSettingCollapsed">
                 <div class="well">
 
-                    <div ng-show="baseModel=='Comment'">
+                    <a href="" class="btn btn-link btn-default pull-right" ng-click="saveCurrentSetting()"><i class="fa fa-floppy-o"></i> Save current setting</a>
 
-                        <h3> Comment ranking weights</h3> Article Relevance:
-                        <input type="range" id="ARSlider" name="input" ng-model='currentCategory.weights.AR' min="0" max="100" required> Converational Relevance:
-                        <input type="range" name="input" ng-model='currentCategory.weights.CR' min="0" max="100" required> Personal XP:
-                        <input type="range" name="input" ng-model='currentCategory.weights.personal' min="0" max="100" required> Readability:
-                        <input type="range" name="input" ng-model='currentCategory.weights.readability' min="0" max="100" required> Brevity:
+                    <br>
 
-                        <input type="range" name="input" ng-model='currentCategory.weights.brevity' min="0" max="100" required> Recommendation Score:
-                        <input type="range" name="input" ng-model='currentCategory.weights.recommend' min="0" max="100" required>
-
+                    <div ng-repeat="scoreModel in scoreModels">
+                        <h4> Criteria based on {{scoreModel}} score</h4>
+                        <ul>
+                            <li ng-repeat="criteria in criterias | filter:{model:scoreModel}">
+                                {{criteria.display_text}} : {{currentCategory.weights[criteria.name]}}
+                                <input type="range" ng-model='currentCategory.weights[criteria.name]' min="0" max="100" required>
+                            </li>
+                        </ul>
                     </div>
-
-                    <div ng-show="baseModel=='User'">
-
-                        <h3> User ranking weights</h3> Activity:
-                        <input type="range" id="ARSlider" name="input" ng-model='currentCategory.weights.userActivity' min="0" max="100" required> Personal XP:
-                        <input type="range" name="input" ng-model='currentCategory.weights.userPersonal' min="0" max="100" required> Brevity:
-                        <input type="range" name="input" ng-model='currentCategory.weights.userBrevity' min="0" max="100" required> Picks count:
-                        <input type="range" name="input" ng-model='currentCategory.weights.userPicks' min="0" max="100" required> Recommendation count:
-
-                        <input type="range" name="input" ng-model='currentCategory.weights.userRecommend' min="0" max="100" required> Readability:
-                        <input type="range" name="input" ng-model='currentCategory.weights.userReadability' min="0" max="100" required>
-
-                    </div>
-
                 </div>
             </div>
             <br>
@@ -176,7 +164,7 @@
                             <dt dir-paginate-start='comment in filteredComment=(nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true | filter: searchText) | itemsPerPage: 5' pagination-id="tab.status">
                                 {{comment.DisplayName}}
                             </dt>
-                            
+
 
 
                             <dd>
@@ -206,7 +194,7 @@
                             <dt dir-paginate-start='comment in nomaData |orderBy:"score":true| itemsPerPage: 5' pagination-id="All">
                                 {{comment.DisplayName}}
                             </dt>
-                            
+
 
 
                             <dd>
