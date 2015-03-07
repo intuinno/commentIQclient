@@ -12,7 +12,7 @@
             <h3> 
           F.B.I. Director Speaks About Race
           </h3>
-            <p dd-text-collapse dd-text-collapse-max-length="310" dd-text-collapse-text="{{article}}"></p>
+            <p dd-text-collapse dd-text-collapse-max-length="529" dd-text-collapse-text="{{article}}"></p>
 
             <br>
 
@@ -20,7 +20,7 @@
 
             <div class="overviewButton btn-group">
 
-                <label class="btn btn-primary" ng-model="overview" btn-radio='1'> Overview </label>
+                <label class="btn btn-primary" ng-model="overview" btn-radio='1'> Custom </label>
                 <label class="btn btn-primary" ng-model="overview" btn-radio="0"> Map </label>
                 <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
             </div>
@@ -225,12 +225,12 @@
 
                                 <br> score = {{comment.score}}
                                 <br> brush = {{comment.selected}}
-
+                                <br> &nbsp;
                             </dd>
 
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
-                            <a href="" class="btn btn-link btn-default" ng-click="pickReason(comment)" ng-hide="status=='Picked'">Pick</a>
+                            <a href="" class="button-new" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="button-new" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="button-new" ng-click="pickReason(comment)" ng-hide="status=='Picked'">Pick</a>
                             <hr>
                             <br dir-paginate-end>
                         </dl>
@@ -255,16 +255,16 @@
                                 <div ng-bind-html="comment.commentBody"></div>
                                 <br> score = {{comment.score}}
                                 <br> brush = {{comment.selected}}
-
+                                <br> &nbsp;
                             </dd>
 
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
+                            <a href="" class="button-new" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="button-new" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="button-new" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
 
 
                             <hr>
-                            <hr dir-paginate-end>
+                            <br dir-paginate-end>
                         </dl>
                     </div>
                     <dir-pagination-controls pagination-id='All'></dir-pagination-controls>
