@@ -59,6 +59,33 @@ angular.module('commentiqApp')
 
                 });
 
+                chart.addBrush();
+
+                chart.on('brushing', function(brush) {
+                    console.log(JSON.stringify(brush.extent()));
+                });
+
+                var mapCrossfilter = crossfilter();
+
+                mapCrossfilter.add(scope.data);
+
+                var location = mapCrossfilter.dimension(function(d) {
+                    return [d.Latitude, d.Longitude];
+                });
+
+                var filterLocation = function(area) {
+
+                    var longtitudes = [area[0][0], area[1][0]];
+                    var latitudes = [area[0][1], area[1][1]];
+
+                    location.filterFunction(function(d) {
+                        return d[0] >= longitudes[0] && d[0] <= longitudes[1] && d[1] >= latitudes[0] && d[1] <= latitudes[1];
+                    });
+
+                    return location.top(Infinity);
+
+                };
+
                 function resize() {
 
                     width = d3.select(element[0]).node().offsetWidth;
@@ -101,7 +128,8 @@ d3.intuinno.gathermap = function module() {
         legend,
         stateGroup,
         nodeGroup,
-        legendGroup;
+        legendGroup,
+        x1, x2, y1, y2, brushX, brushY;
 
     var legendRectSize = 18; // NEW
     var legendSpacing = 4;
@@ -113,10 +141,7 @@ d3.intuinno.gathermap = function module() {
         var container = svg.append("g").classed("container-group", true);
         container.append("g").classed("map-group", true);
         container.append("g").classed("comment-group", true);
-
         container.append("g").classed("legend-group", true);
-
-
 
 
         svg.datum([]);
@@ -130,6 +155,33 @@ d3.intuinno.gathermap = function module() {
 
         exports.drawLegends();
 
+        //Get the longitude of the top left corner of our map area.
+        var long1 = projection.invert([0, 0])[0];
+        //Get the longitude of the top right corner of our map area.
+        var long2 = projection.invert([size[0], 0])[0];
+
+        //Get the latitude of the top left corner of our map area.
+        var lat1 = projection.invert([0, 0])[1];
+        //Get the latitude of the bottom left corner of our map area.
+        var lat2 = projection.invert(size)[1];
+
+        //Create a linear scale generator for the x of our brush.
+        brushX = d3.scale.linear()
+            .range([0, size[0]])
+            .domain([long1, long2]);
+
+        //Create a linear scale generator for the y of our brush.
+        brushY = d3.scale.linear()
+            .range([0, size[1]])
+            .domain([lat1, lat2]);
+
+        //Create our brush using our brushX and brushY scales.
+        brush = d3.svg.brush()
+            .x(brushX)
+            .y(brushY)
+            .on('brush', function() {
+                dispatch.brushing(brush);
+            });
 
     }
 
@@ -142,7 +194,7 @@ d3.intuinno.gathermap = function module() {
         svg.select('.legend-group')
             .selectAll('*').remove();
 
-        
+
         legend = svg.select('.legend-group')
             .selectAll('.legend') // NEW
             .data(statusArray) // NEW
@@ -151,7 +203,7 @@ d3.intuinno.gathermap = function module() {
             .attr('class', 'legend') // NEW
             .attr('transform', function(d, i) { // NEW
                 var height = legendRectSize + legendSpacing; // NEW
-                var offset = size[0]/statusArray.length;
+                var offset = size[0] / statusArray.length;
                 var vert = size[1] - height; // NEW
                 var horz = i * offset; // NEW
                 return 'translate(' + horz + ',' + vert + ')'; // NEW
@@ -204,7 +256,7 @@ d3.intuinno.gathermap = function module() {
 
         var node = svg.select('.comment-group')
             .selectAll('.commentMapMark')
-            .data(dataOnScreen,function(d){
+            .data(dataOnScreen, function(d) {
                 return d.CommentSequence;
             });
 
@@ -241,7 +293,18 @@ d3.intuinno.gathermap = function module() {
 
 
 
-    }
+    };
+
+    exports.addBrush = function() {
+
+        svg.append('g')
+            .attr('class', 'brush')
+            .call(brush)
+            .selectAll('rect')
+            .attr('width', size[0]);
+
+        return this;
+    };
 
 
 
