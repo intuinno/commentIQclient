@@ -88,7 +88,7 @@ angular.module('commentiqApp')
 
                 function resize() {
 
-                    width = d3.select(element[0]).node().offsetWidth;
+                    width = d3.select(element[0]).node().parentNode.parentNode.offsetWidth;
                     height = width * 0.7;
 
                     chart.scale(width)
@@ -129,7 +129,8 @@ d3.intuinno.gathermap = function module() {
         stateGroup,
         nodeGroup,
         legendGroup,
-        x1, x2, y1, y2, brushX, brushY;
+        x1, x2, y1, y2, brushX, brushY,
+        container;
 
     var legendRectSize = 18; // NEW
     var legendSpacing = 4;
@@ -138,11 +139,17 @@ d3.intuinno.gathermap = function module() {
 
         svg = _selection;
 
-        var container = svg.append("g").classed("container-group", true);
-        container.append("g").classed("map-group", true);
-        container.append("g").classed("comment-group", true);
-        container.append("g").classed("legend-group", true);
 
+
+        if (!container) {
+
+            container = svg.append("g").classed("container-group", true);
+            container.append("g").classed("map-group", true);
+            container.append("g").classed("comment-group", true);
+            container.append("g").classed("legend-group", true);
+
+
+        }
 
         svg.datum([]);
 
@@ -204,7 +211,7 @@ d3.intuinno.gathermap = function module() {
             .attr('transform', function(d, i) { // NEW
                 var height = legendRectSize + legendSpacing; // NEW
                 var offset = size[0] / statusArray.length;
-                var vert = size[1] - height; // NEW
+                var vert = size[1] - height * 2; // NEW
                 var horz = i * offset; // NEW
                 return 'translate(' + horz + ',' + vert + ')'; // NEW
             }); // NEW
@@ -298,7 +305,7 @@ d3.intuinno.gathermap = function module() {
     exports.addBrush = function() {
 
         svg.append('g')
-            .attr('class', 'brush')
+            .attr('class', 'brushMap')
             .call(brush)
             .selectAll('rect')
             .attr('width', size[0]);
