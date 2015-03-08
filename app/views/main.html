@@ -20,30 +20,23 @@
 
             <div class="overviewButton btn-group">
 
-                <label class="btn btn-primary" ng-model="overview" btn-radio='1'> Overview </label>
-                <label class="btn btn-primary" ng-model="overview" btn-radio="0"> Map </label>
+                <label class="btn btn-primary" ng-model="overview" btn-radio='"gatherplot"'> Overview </label>
+                <label class="btn btn-primary" ng-model="overview" btn-radio='"map"'> Map </label>
                 <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
             </div>
 
             <br>
 
-            <ul rn-carousel-controls="true" rn-carousel rn-carousel-indicator="true" rn-carousel-index="overview">
 
 
-
-                <li>
-
-                    <div>
+                    <div ng-show="overview=='map'">
 
                         <div class="gathermap" data="nomaData"> </div>
 
                     </div>
 
-                </li>
 
-                <li>
-
-                    <div>
+                    <div ng-show="overview=='gatherplot'">
 
                         <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
 
@@ -86,10 +79,6 @@
 
                         </div>
                     </div>
-
-                </li>
-
-            </ul>
 
         </div>
         <div class="col-sm-6">

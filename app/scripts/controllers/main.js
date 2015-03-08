@@ -193,7 +193,7 @@ angular.module('commentiqApp')
 
         $scope.nomaConfig.SVGAspectRatio = 1.4;
 
-        $scope.overview = 0;
+        $scope.overview = "gatherplot";
 
         var computeScoreComment = function(criteria, comment) {
 

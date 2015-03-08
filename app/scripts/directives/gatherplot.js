@@ -155,11 +155,30 @@
                             return scope.$apply();
                         };
 
+                        // scope.$watch(function() {
+                        //     return angular.element(iElement[0]).innerWidth;
+                        // }, function() {
+                        //     return scope.handleConfigChange(renderData, scope.config);
+                        // });
+
                         scope.$watch(function() {
-                            return angular.element(window)[0].innerWidth;
+                            return d3.select(iElement[0]).node().offsetWidth;
                         }, function() {
                             return scope.handleConfigChange(renderData, scope.config);
                         });
+
+
+                        scope.$watch(function() {
+                            return d3.select(iElement[0].parentNode).attr('class');
+                        }, function() {
+
+                            if (d3.select(iElement[0].parentNode).attr('class') === 'ng-show') {
+                                return scope.handleConfigChange(renderData, scope.config);
+                            }
+                        });
+
+
+
 
                         // watch for data changes and re-render
                         scope.$watch('data', function(newVals, oldVals) {
@@ -1300,9 +1319,9 @@
                             //Update size of SVG
 
                             if (scope.config.matrixMode === false) {
-                                outerWidth = d3.select(iElement[0]).node().offsetWidth;
+                                outerWidth = d3.select(iElement[0]).node().parentNode.parentNode.offsetWidth;
                             } else {
-                                outerWidth = d3.select(".matrixGroup").node().offsetWidth;
+                                outerWidth = d3.select(iElement[0]).node().parentNode.parentNode.offsetWidth;
 
                                 outerWidth = outerWidth / (scope.config.dims.length) - 10;
 
@@ -1310,7 +1329,7 @@
 
                             if (outerWidth === 0) {
 
-                                outerWidth = 200;
+                                outerWidth = 500;
                             }
                             // calculate the height
                             outerHeight = outerWidth / config.SVGAspectRatio;
