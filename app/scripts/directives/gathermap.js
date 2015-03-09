@@ -20,6 +20,10 @@ angular.module('commentiqApp')
 
                 scope.$watch('data', function(newVals, oldVals) {
 
+                    mapCrossfilter.remove();
+
+                    mapCrossfilter.add(scope.data);
+
                     return scope.renderDataChange();
 
                 }, true);
@@ -62,7 +66,21 @@ angular.module('commentiqApp')
                 chart.addBrush();
 
                 chart.on('brushing', function(brush) {
-                    console.log(JSON.stringify(brush.extent()));
+                    // console.log(JSON.stringify(d3.event.target.extent()));
+                    var filteredLocations = filterLocation(brush);
+                    // // console.log(filteredLocations);
+                    // console.log(JSON.stringify(d3.event.target.extent()));
+                    // console.log(JSON.stringify(brush));
+                    scope.data.forEach(function(d) {
+                        d.selected = false;
+                    });
+                    filteredLocations.forEach(function(d) {
+                        d.selected = true;
+                    });
+                });
+
+                chart.on('brushended', function(brush) {
+                    scope.$apply();
                 });
 
                 var mapCrossfilter = crossfilter();
@@ -70,16 +88,24 @@ angular.module('commentiqApp')
                 mapCrossfilter.add(scope.data);
 
                 var location = mapCrossfilter.dimension(function(d) {
-                    return [d.Latitude, d.Longitude];
+                    return [d.Longitude, d.Latitude];
                 });
 
                 var filterLocation = function(area) {
 
-                    var longtitudes = [area[0][0], area[1][0]];
+                    var longitudes = [area[0][0], area[1][0]];
                     var latitudes = [area[0][1], area[1][1]];
 
                     location.filterFunction(function(d) {
-                        return d[0] >= longitudes[0] && d[0] <= longitudes[1] && d[1] >= latitudes[0] && d[1] <= latitudes[1];
+                        // return d[0] >= longitudes[0] && d[0] <= longitudes[1] && d[1] >= latitudes[0] && d[1] <= latitudes[1];
+
+                        if (d[0] >= longitudes[0] && d[0] <= longitudes[1] && d[1] >= latitudes[1] && d[1] <= latitudes[0]) {
+
+                            // console.log(d);
+                            return true;
+                        } else {
+                            return false;
+                        }
                     });
 
                     return location.top(Infinity);
@@ -103,6 +129,8 @@ angular.module('commentiqApp')
                     chart.drawStates(mapData);
 
                     chart.drawComments(scope.data);
+
+                    chart.updateBrush();
                 }
 
             }
@@ -114,7 +142,7 @@ d3.intuinno = {};
 
 d3.intuinno.gathermap = function module() {
 
-    var dispatch = d3.dispatch('hover', 'drawEnd', 'brushing'),
+    var dispatch = d3.dispatch('hover', 'drawEnd', 'brushing', 'brushended'),
         projection,
         path,
         t,
@@ -153,42 +181,25 @@ d3.intuinno.gathermap = function module() {
 
         svg.datum([]);
 
-        projection = d3.geo.albersUsa()
+        projection = d3.geo.albers()
             .scale(scale)
-            .translate([size[0] / 2, size[1] / 2]);
+            .translate([size[0] / 2, size[1] / 2])
+            .precision(.1);
+
+
+        // projection = d3.geo.equirectangular()
+        //     .scale(scale*0.8)
+        //     .translate([300,200])
+        //     .rotate([96,0])
+        //     .center([-0.6,38.7])
+        //     // .parallels([29.5,45.5]);
+        //     .precision(.1);
 
         path = d3.geo.path()
             .projection(projection);
 
         exports.drawLegends();
 
-        //Get the longitude of the top left corner of our map area.
-        var long1 = projection.invert([0, 0])[0];
-        //Get the longitude of the top right corner of our map area.
-        var long2 = projection.invert([size[0], 0])[0];
-
-        //Get the latitude of the top left corner of our map area.
-        var lat1 = projection.invert([0, 0])[1];
-        //Get the latitude of the bottom left corner of our map area.
-        var lat2 = projection.invert(size)[1];
-
-        //Create a linear scale generator for the x of our brush.
-        brushX = d3.scale.linear()
-            .range([0, size[0]])
-            .domain([long1, long2]);
-
-        //Create a linear scale generator for the y of our brush.
-        brushY = d3.scale.linear()
-            .range([0, size[1]])
-            .domain([lat1, lat2]);
-
-        //Create our brush using our brushX and brushY scales.
-        brush = d3.svg.brush()
-            .x(brushX)
-            .y(brushY)
-            .on('brush', function() {
-                dispatch.brushing(brush);
-            });
 
     }
 
@@ -247,7 +258,13 @@ d3.intuinno.gathermap = function module() {
     exports.drawComments = function(_data) {
 
         var dataOnScreen = _data.filter(function(d) {
-            return projection([+d.Longitude, +d.Latitude]);
+
+            var a = projection([+d.Longitude, +d.Latitude]);
+
+            if (isNaN(a[0])) {
+                return false;
+            }
+            return a;
         });
 
 
@@ -281,7 +298,15 @@ d3.intuinno.gathermap = function module() {
             .attr('r', 1)
             .attr('class', function(d) {
 
-                return "commentMapMark " + d.status;
+                var selectionStatus;
+
+                if (d.selected) {
+                    selectionStatus = 'selected';
+                } else {
+                    selectionStatus = 'notSelected';
+                }
+
+                return "commentMapMark " + d.status + " " + selectionStatus;
             })
             .on('mouseover', dispatch.hover)
             .call(force.drag);
@@ -291,6 +316,12 @@ d3.intuinno.gathermap = function module() {
 
             node
                 .attr("cx", function(o) {
+
+                    var temp = (projection([o.Longitude, o.Latitude])[0] - o.x) * k
+                    if (isNaN(temp)) {
+                        console.log(o);
+                    }
+
                     return o.x += (projection([o.Longitude, o.Latitude])[0] - o.x) * k;
                 })
                 .attr("cy", function(o) {
@@ -304,6 +335,61 @@ d3.intuinno.gathermap = function module() {
 
     exports.addBrush = function() {
 
+
+        //Get the longitude of the top left corner of our map area.
+        var long1 = projection.invert([0, 0])[0];
+        //Get the longitude of the top right corner of our map area.
+        var long2 = projection.invert([size[0], 0])[0];
+
+        //Get the latitude of the top left corner of our map area.
+        var lat1 = projection.invert([0, 0])[1];
+        //Get the latitude of the bottom left corner of our map area.
+        var lat2 = projection.invert(size)[1];
+
+        //Create a linear scale generator for the x of our brush.
+        brushX = d3.scale.linear()
+            .range([0, size[0]])
+            .domain([long1, long2]);
+
+        //Create a linear scale generator for the y of our brush.
+        brushY = d3.scale.linear()
+            .range([0, size[1]])
+            .domain([lat1, lat2]);
+
+        //Create our brush using our brushX and brushY scales.
+        brush = d3.svg.brush()
+            .x(brushX)
+            .y(brushY)
+            .on('brush', brushing)
+            .extent([
+                [100, 100],
+                [200, 200]
+            ]);
+
+        // console.log(brushX.invert(d3.mouse(this)[0]));
+        // console.log(d3.event.target.extent()[0]);
+        // });
+
+        brush.on('brushend', function(brush) {
+
+            dispatch.brushended(brush);
+            console.log(d3.mouse(this));
+
+        });
+
+        brush.on('brushstart', function(brush) {
+            console.log(d3.mouse(this));
+        })
+
+        function brushing() {
+
+            var extent = d3.event.target.extent();
+            console.log(JSON.stringify(extent));
+            console.log("top left: " + projection.invert([brushX(extent[0][0]), brushY(extent[1][1])]));
+            console.log("bottom right: " + projection.invert([brushX(extent[1][0]), brushY(extent[0][1])]));
+            dispatch.brushing([projection.invert([brushX(extent[0][0]), brushY(extent[1][1])]), projection.invert([brushX(extent[1][0]), brushY(extent[0][1])])]);
+        };
+
         svg.append('g')
             .attr('class', 'brushMap')
             .call(brush)
@@ -311,6 +397,53 @@ d3.intuinno.gathermap = function module() {
             .attr('width', size[0]);
 
         return this;
+    };
+
+
+
+    exports.updateBrush = function() {
+
+        //Get the longitude of the top left corner of our map area.
+        var long1 = projection.invert([0, 0])[0];
+        //Get the longitude of the top right corner of our map area.
+        var long2 = projection.invert([size[0], 0])[0];
+
+        //Get the latitude of the top left corner of our map area.
+        var lat1 = projection.invert([0, 0])[1];
+        //Get the latitude of the bottom left corner of our map area.
+        var lat2 = projection.invert(size)[1];
+
+        //Create a linear scale generator for the x of our brush.
+        brushX = d3.scale.linear()
+            .range([0, size[0]])
+            .domain([long1, long2]);
+
+        //Create a linear scale generator for the y of our brush.
+        brushY = d3.scale.linear()
+            .range([0, size[1]])
+            .domain([lat1, lat2]);
+
+        //Create our brush using our brushX and brushY scales.
+        brush = d3.svg.brush()
+            .x(brushX)
+            .y(brushY)
+            .on('brush', brushing)
+            .on('brushend', dispatch.brushended);
+
+        function brushing() {
+
+            var extent = d3.event.target.extent();
+            // console.log(JSON.stringify(extent));
+            // console.log("top left: " + projection.invert([brushX(extent[0][0]), brushY(extent[1][1])]));
+            // console.log("bottom right: " + projection.invert([brushX(extent[1][0]), brushY(extent[0][1])]));
+            dispatch.brushing([projection.invert([brushX(extent[0][0]), brushY(extent[1][1])]), projection.invert([brushX(extent[1][0]), brushY(extent[0][1])])]);
+        };
+
+        svg.select('.brushMap')
+            .call(brush)
+            .selectAll('rect')
+            .attr('width', size[0]);
+
     };
 
 

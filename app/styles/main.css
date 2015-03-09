@@ -1,3 +1,9 @@
+.brushMap .extent {
+  stroke: #f09f8c;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
+
 hr {
    display: block;
    position: relative;
@@ -83,6 +89,16 @@ ul[rn-carousel] {
     /*position:absolute;*/
     /*box-sizing: border-box;*/
 }
+
+.commentMapMark.selected {
+  fill-opacity: 1;
+  stroke-opacity: 1;
+}
+
+.commentMapMark.notSelected {
+  fill-opacity:0.1;
+  stroke-opacity:0.1;
+}
 .commentMapMark.Accepted {
     fill: steelblue;
     stroke: steelblue;
@@ -100,7 +116,7 @@ ul[rn-carousel] {
     stroke: gray;
 }
 .commentMapMark {
-    fill-opacity: 1;
+    /*fill-opacity: 1;*/
     /*stroke: gray;*/
     stroke-width: 1;
 }
