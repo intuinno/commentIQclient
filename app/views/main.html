@@ -20,7 +20,7 @@
 
             <div class="overviewButton btn-group">
 
-                <label class="btn btn-primary" ng-model="overview" btn-radio='"gatherplot"'> Overview </label>
+                <label class="btn btn-primary" ng-model="overview" btn-radio='"gatherplot"'> Scores </label>
                 <label class="btn btn-primary" ng-model="overview" btn-radio='"map"'> Map </label>
                 <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
             </div>
@@ -61,22 +61,6 @@
 
                             </br>
                             </br>
-                            Mark nodes with color according to
-
-                            <select ng-model="nomaConfig.colorDim" ng-options="f for f in nomaConfig.dims">
-
-                                <option value="">-- undefined --</option>
-
-                            </select>
-                        </h5>
-
-
-                            <div ng-class="{tryMe: isRelativeSelectFocused}">
-                                <h6>
-                                <input type='checkbox' ng-model="nomaConfig.relativeMode" ng-trueValue="relative" ng-false-value="'absolute'">Check this to make it easy to compare groups of different sizes.</h6>
-
-                            </div>
-
                         </div>
                     </div>
 

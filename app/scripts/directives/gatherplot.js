@@ -24,11 +24,11 @@
 
                         //Constants and Setting Environment variables 
 
-                        var margin = 80;
+                        var margin = 50;
                         var zoom;
 
 
-                        var maxDotSize = 5;
+                        var maxDotSize = 2;
 
                         if (scope.config.matrixMode === true) {
                             margin = 5;
@@ -102,13 +102,34 @@
 
                             // .value("title");
 
-                            labelDiv = d3.select(iElement[0])
-                                .append("div")
-                                .attr("class", "btn-group")
-                                .html('<a class="btn btn-default" title="Pan and Zoom" id="toolbarPanZoom"><i class="fa fa-search-plus"></i></a><a class="btn btn-default" title="Select" id="toolbarSelect"><i class="fa fa-square-o"></i></a><a class="btn btn-default" title="Reset" id="toolbarReset"><i class="fa fa-undo"></i></a>');
+                            // labelDiv = d3.select(iElement[0])
+                            //     .append("div")
+                            //     .attr("class", "btn-group")
+                            //     .html('<a class="btn btn-default" title="Pan and Zoom" id="toolbarPanZoom"><i class="fa fa-search-plus"></i></a><a class="btn btn-default" title="Select" id="toolbarSelect"><i class="fa fa-square-o"></i></a><a class="btn btn-default" title="Reset" id="toolbarReset"><i class="fa fa-undo"></i></a>');
 
                             svg = d3.select(iElement[0])
                                 .append("svg:svg");
+
+                            // svg.append("defs").append("marker")
+                            //     .attr("id", "arrowhead")
+                            //     .attr("refX", 6 + 3) /*must be smarter way to calculate shift*/
+                            //     .attr("refY", 2)
+                            //     .attr("markerWidth", 6)
+                            //     .attr("markerHeight", 4)
+                            //     .attr("orient", "auto")
+                            //     .append("path")
+                            //     .attr("d", "M 0,0 V 4 L6,2 Z"); //this is actual shape for arrowhead
+
+                            svg.append('svg:defs').append('svg:marker')
+                                .attr('id', 'arrowhead')
+                                .attr('viewBox', '0 -5 10 10')
+                                .attr('refX', 6)
+                                .attr('markerWidth', 3)
+                                .attr('markerHeight', 3)
+                                .attr('orient', 'auto')
+                                .append('svg:path')
+                                .attr('d', 'M0,-5L10,0L0,5')
+                                .attr('fill', '#000');
 
                             svgGroup = svg.append("g")
                                 .attr("transform", "translate(" + margin + "," + margin + ")");
@@ -321,24 +342,24 @@
                                     .attr("class", "dot")
                                     .on("mouseover", function(d) {
 
-                                        tooltip.transition()
-                                            .duration(500)
-                                            .style("opacity", 0);
+                                        // tooltip.transition()
+                                        //     .duration(500)
+                                        //     .style("opacity", 0);
 
 
-                                        tooltip.transition()
-                                            .duration(200)
-                                            .style("opacity", 0.9);
+                                        // tooltip.transition()
+                                        //     .duration(200)
+                                        //     .style("opacity", 0.9);
 
 
-                                        tooltip.html(d.commentTitle + "<br/>" + scope.xdim + ":" + xOriginalValue(d) + "<br/> " + scope.ydim + ":" + yOriginalValue(d) + "</br>" + scope.config.colorDim + ":" + colorOriginalValue(d) + "</br>" + d.commentBody + "</br>" + '<a href="' + d.articleURL + '" target="_blank">Click to See Article</a>')
-                                            .style("left", (d3.event.pageX + 5) + "px")
-                                            .style("top", (d3.event.pageY - 28) + "px");
+                                        // tooltip.html(d.commentTitle + "<br/>" + scope.xdim + ":" + xOriginalValue(d) + "<br/> " + scope.ydim + ":" + yOriginalValue(d) + "</br>" + scope.config.colorDim + ":" + colorOriginalValue(d) + "</br>" + d.commentBody + "</br>" + '<a href="' + d.articleURL + '" target="_blank">Click to See Article</a>')
+                                        //     .style("left", (d3.event.pageX + 5) + "px")
+                                        //     .style("top", (d3.event.pageY - 28) + "px");
                                     })
                                     .on("mouseout", function(d) {
-                                        tooltip.transition()
-                                            .duration(500)
-                                            .style("opacity", 0);
+                                        // tooltip.transition()
+                                        //     .duration(500)
+                                        //     .style("opacity", 0);
                                     })
                                     .on("mousedown", function(d) {
                                         if (d3.event.shiftKey) d3.select(this).classed("selected", d.selected = !d.selected);
@@ -1357,6 +1378,8 @@
 
                             configZoom();
 
+                            configBrush();
+
                         };
 
                         var configZoomToolbar = function() {
@@ -1437,8 +1460,8 @@
 
                                     })
                                     .on("brushend", function() {
-                                        d3.event.target.clear();
-                                        d3.select(this).call(d3.event.target);
+                                        // d3.event.target.clear();
+                                        // d3.select(this).call(d3.event.target);
                                         scope.$apply();
                                     }));
 
@@ -3357,8 +3380,20 @@
                                 .data(scope.data, function(d) {
                                     return +d.id;
                                 })
-                                .style("fill", function(d) {
-                                    return color(d[scope.config.colorDim]);
+                                // .style("fill", function(d) {
+                                //     return color(d[scope.config.colorDim]);
+                                // })
+                                .attr('class', function(d) {
+
+                                    var selectionStatus;
+
+                                    if (d.selected) {
+                                        selectionStatus = 'selected';
+                                    } else {
+                                        selectionStatus = 'notSelected';
+                                    }
+
+                                    return "commentMapMark " + d.status + " " + selectionStatus;
                                 })
                                 .transition()
                                 .duration(1500)
@@ -3396,8 +3431,20 @@
                                 .data(scope.data, function(d) {
                                     return +d.id;
                                 })
-                                .style("fill", function(d) {
-                                    return color(d[scope.config.colorDim]);
+                                // .style("fill", function(d) {
+                                //     return color(d[scope.config.colorDim]);
+                                // })
+                                .attr('class', function(d) {
+
+                                    var selectionStatus;
+
+                                    if (d.selected) {
+                                        selectionStatus = 'selected';
+                                    } else {
+                                        selectionStatus = 'notSelected';
+                                    }
+
+                                    return "commentMapMark " + d.status + " " + selectionStatus;
                                 })
                                 .transition()
                                 .duration(0)
@@ -3708,13 +3755,13 @@
                                 .attr("transform", "translate(0," + (height) + ")")
                                 .call(xAxis);
 
-                            xAxisNodes.selectAll('text')
-                                .style("font-size", 12);
+                            xAxisNodes.selectAll('text').remove();
+                            // .style("font-size", 12);
 
 
-                            svg.selectAll(".x .tick line")
-                                .style("stroke-width", 1)
-                                .style("stroke", "black");
+
+
+                            svg.selectAll(".x .tick line").remove();
                         };
 
                         var drawYAxisLinesAndTicksForScatter = function() {
@@ -3729,12 +3776,12 @@
                                 .attr("class", "y axis")
                                 .call(yAxis);
 
-                            yAxisNodes.selectAll('text')
-                                .style("font-size", 12);
+                            yAxisNodes.selectAll('text').remove();
+                            // .style("font-size", 12);
 
-                            svg.selectAll(".y .tick line")
-                                .style("stroke-width", 1)
-                                .style("stroke", "black");
+                            svg.selectAll(".y .tick line").remove();
+                            // .style("stroke-width", 1)
+                            // .style("stroke", "black");
 
                         };
 
@@ -4479,24 +4526,131 @@
 
                         var drawAxesLabel = function() {
 
+                            // svg.select("defs").remove();
+
+
+
                             xAxisNodes
                                 .append("text")
                                 .attr("class", "axislabel")
                                 .attr("x", width / 2)
-                                .attr("y", 56)
-                                .style("text-anchor", "end")
+                                .attr("y", 25)
+                                .style("text-anchor", "middle")
                                 .text(scope.xdim);
 
-                            //Setup Y axis
+                            var lineFunction = d3.svg.line()
+                                .x(function(d) {
+                                    return d.x;
+                                })
+                                .y(function(d) {
+                                    return d.y;
+                                })
+                                .interpolate("linear");
+
+                            xAxisNodes.append("path")
+                                .attr("marker-end", "url(#arrowhead)")
+                                .attr("d", lineFunction([{
+                                    "x": 50,
+                                    "y": 15
+                                }, {
+                                    "x": 3,
+                                    "y": 15
+                                }]))
+                                .attr("stroke", "black")
+                                .attr("stroke-width", 3)
+                                .attr("fill", "none")
+                                .classed("guideArrow");
+
+                            xAxisNodes.append("text")
+                                .attr("class", "axisnote")
+                                .attr("x", 55)
+                                .attr("y", 20)
+                                .style("text-anchor", "start")
+                                .text("Low");
+
+                            xAxisNodes.append("text")
+                                .attr("class", "axisnote")
+                                .attr("x", width - 55)
+                                .attr("y", 20)
+                                .style("text-anchor", "end")
+                                .text("High");
+
+                            xAxisNodes.append("path")
+                                .attr("marker-end", "url(#arrowhead)")
+                                .attr("d", lineFunction([{
+                                    "x": width - 50,
+                                    "y": 15
+                                }, {
+                                    "x": width - 3,
+                                    "y": 15
+                                }]))
+                                .attr("stroke", "black")
+                                .attr("stroke-width", 3)
+                                .attr("fill", "none")
+                                .classed("guideArrow");
+
 
                             yAxisNodes
                                 .append("text")
                                 .attr("class", "axislabel")
-                                .attr("x", -margin + 10)
-                                .attr("y", -margin / 2 + 10)
-                                .attr("dy", ".71em")
-                                .style("text-anchor", "right")
-                                .text(scope.ydim);
+                                .style("text-anchor", "middle")
+                                .text(scope.ydim)
+                                .attr('transform', function(d, i) { // NEW
+                                    var vert = height / 2; // NEW
+                                    var horz = -margin / 2; // NEW
+                                    return 'translate(' + horz + ',' + vert + ')rotate(-90)'; // NEW
+                                });
+
+                            yAxisNodes.append("path")
+                                .attr("marker-end", "url(#arrowhead)")
+                                .attr("d", lineFunction([{
+                                    "x": -15,
+                                    "y": height - 50
+                                }, {
+                                    "x": -15,
+                                    "y": height - 3
+                                }]))
+                                .attr("stroke", "black")
+                                .attr("stroke-width", 3)
+                                .attr("fill", "none")
+                                .classed("guideArrow");
+
+                            yAxisNodes.append("text")
+                                .attr("class", "axisnote")
+                                .style("text-anchor", "middle")
+                                .text("High")
+                            .attr('transform', function(d, i) { // NEW
+                                var vert = 23; // NEW
+                                var horz = -25; // NEW
+                                return 'translate(' + horz + ',' + vert + ')rotate(-90)'; // NEW
+                            });
+
+                            yAxisNodes.append("text")
+                                .attr("class", "axisnote")
+                                .style("text-anchor", "middle")
+                                .text("Low")
+                            .attr('transform', function(d, i) { // NEW
+                                var vert = height-23; // NEW
+                                var horz = -25; // NEW
+                                return 'translate(' + horz + ',' + vert + ')rotate(-90)'; // NEW
+                            });
+
+                            yAxisNodes.append("path")
+                                .attr("marker-end", "url(#arrowhead)")
+                                .attr("d", lineFunction([{
+                                    "x": -15,
+                                    "y": 50
+                                }, {
+                                    "x": -15,
+                                    "y": 3
+                                }]))
+                                .attr("stroke", "black")
+                                .attr("stroke-width", 3)
+                                .attr("fill", "none")
+                                .classed("guideArrow");
+
+
+
 
 
 
@@ -4504,22 +4658,53 @@
 
                         var drawLegends = function() {
 
-                            resetLegends();
+                            var legendRectSize = 18; // NEW
+                            var legendSpacing = 4;
 
-                            if (!scope.config.colorDim) {
+                            // resetLegends();
 
-                                return;
-                            }
+                            var statusArray = ['New', 'Accepted', 'Rejected', 'Picked'];
 
-                            var currentDimSetting = dimSetting[scope.config.colorDim];
+                            svg.selectAll('.legenditem')
+                                .selectAll('*').remove();
 
-                            if (currentDimSetting.dimType === 'ordinal') {
 
-                                drawHeatMapLegends();
-                            } else {
+                            var legendGroup = svg.selectAll(".legend")
+                                .data(statusArray);
 
-                                drawNominalLegends();
-                            }
+                            legendGroup.exit().remove();
+
+
+                            var legend = legendGroup.enter().append("g")
+                                .attr('class', 'legenditem') // NEW
+                                .attr('transform', function(d, i) { // NEW
+                                    var height = legendRectSize + legendSpacing; // NEW
+                                    var offset = outerWidth / statusArray.length;
+                                    var vert = 0; // NEW
+                                    var horz = i * offset; // NEW
+                                    return 'translate(' + horz + ',' + vert + ')'; // NEW
+                                }); // NEW
+
+                            legend.append("rect")
+                                .attr('width', legendRectSize) // NEW
+                                .attr('height', legendRectSize) // NEW
+                                .attr('class', function(d) {
+
+                                    return "commentMapMark " + d;
+                                })
+
+                            legend.append("text")
+                                .attr('x', legendRectSize + legendSpacing) // NEW
+                                .attr('y', legendRectSize - legendSpacing) // NEW
+                                .text(function(d) {
+                                    return d;
+                                }); // NEW
+
+
+
+
+
+
                         };
 
                         var resetLegends = function() {

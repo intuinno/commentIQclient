@@ -4,6 +4,11 @@
   shape-rendering: crispEdges;
 }
 
+.brush .extent {
+  stroke: #f09f8c;
+  fill-opacity: .125;
+  shape-rendering: crispEdges;
+}
 hr {
    display: block;
    position: relative;
@@ -110,6 +115,7 @@ ul[rn-carousel] {
 .commentMapMark.Picked {
     fill: red;
     stroke: red;
+    stroke-width:3;
 }
 .commentMapMark.New {
     fill: gray;
@@ -395,7 +401,7 @@ svg {
     height: 100%;
 }
 .axislabel {
-    font: 20px sans-serif;
+    font: 16px sans-serif;
 }
 /*.axis path,
 .axis line {

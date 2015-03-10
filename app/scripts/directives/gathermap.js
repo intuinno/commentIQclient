@@ -222,7 +222,7 @@ d3.intuinno.gathermap = function module() {
             .attr('transform', function(d, i) { // NEW
                 var height = legendRectSize + legendSpacing; // NEW
                 var offset = size[0] / statusArray.length;
-                var vert = size[1] - height * 2; // NEW
+                var vert =  0 ; // NEW
                 var horz = i * offset; // NEW
                 return 'translate(' + horz + ',' + vert + ')'; // NEW
             }); // NEW
