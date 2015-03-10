@@ -124,7 +124,8 @@ d3.intuinno.stackedBar = function module() {
                 })])
                 .range([0, chartW]);
 
-            var color = d3.scale.category20();
+            var color = d3.scale.category20()
+            				.domain(_data.map(function(d){return d.name;}));
 
             var tip = d3.tip().attr('class','d3-tip')
             				.offset([-10, 0]).html(function(d) { return d.display_text;});
