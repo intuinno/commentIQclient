@@ -27,7 +27,7 @@ angular.module('commentiqApp')
 
         $scope.scoreModels = ['comment', 'user'];
 
-        $scope.pickTags = ['well-written', 'informative', 'personal experience', 'critical','humorous'];
+        $scope.pickTags = ['well-written', 'informative', 'personal experience', 'critical', 'humorous'];
 
         $scope.criterias = [{
             name: 'ArticleRelevance',
@@ -222,6 +222,38 @@ angular.module('commentiqApp')
             return score;
         };
 
+
+        $scope.$watch(function() {
+            return $scope.nomaConfig.xDim;
+        }, function(newVals, oldVals) {
+            $scope.xAxisExplanation = findExplantion($scope.nomaConfig.xDim);
+            // $scope.$apply();
+
+        }, true);
+
+        $scope.$watch(function() {
+            return $scope.nomaConfig.yDim;
+        }, function(newVals, oldVals) {
+            $scope.yAxisExplanation = findExplantion($scope.nomaConfig.yDim);
+            // $scope.$apply();
+
+        }, true);
+
+        var findExplantion = function(dimName) {
+            var filtered = $scope.criterias.filter(function(d) {
+                return d.name === dimName ? true : false;
+            });
+
+            if (filtered.length === 0) {
+
+                return 'undefined';
+            } else {
+
+                return filtered[0].help_text;
+                $
+            }
+        }
+
         $scope.$watch(function() {
             return $scope.currentCategory;
         }, function(newVals, oldVals) {
@@ -332,6 +364,8 @@ angular.module('commentiqApp')
                     // var randomNumber = Math.floor(Math.random() * $scope.statusArray.length);
                     d.status = 'New';
                     d.selected = true;
+
+                    d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g,''));
 
                     d.commentBody = d.commentBody.replace(/\\/g, "");
                 });

@@ -65,9 +65,12 @@ angular.module('commentiqApp')
 
                 chart.addBrush();
 
+                var filteredLocations;
+
+
                 chart.on('brushing', function(brush) {
                     // console.log(JSON.stringify(d3.event.target.extent()));
-                    var filteredLocations = filterLocation(brush);
+                    filteredLocations = filterLocation(brush);
                     // // console.log(filteredLocations);
                     // console.log(JSON.stringify(d3.event.target.extent()));
                     // console.log(JSON.stringify(brush));
@@ -80,6 +83,14 @@ angular.module('commentiqApp')
                 });
 
                 chart.on('brushended', function(brush) {
+
+                    if (filteredLocations.length === 0) {
+                        scope.data.forEach(function(d) {
+                            d.selected = true;
+                        });
+                        // d3.select(".brush").call(brush.clear());
+                    }
+
                     scope.$apply();
                 });
 
@@ -222,7 +233,7 @@ d3.intuinno.gathermap = function module() {
             .attr('transform', function(d, i) { // NEW
                 var height = legendRectSize + legendSpacing; // NEW
                 var offset = size[0] / statusArray.length;
-                var vert =  0 ; // NEW
+                var vert = 0; // NEW
                 var horz = i * offset; // NEW
                 return 'translate(' + horz + ',' + vert + ')'; // NEW
             }); // NEW

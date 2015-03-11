@@ -14,14 +14,15 @@
           </h3>
             <p dd-text-collapse dd-text-collapse-max-length="529" dd-text-collapse-text="{{article}}"></p>
 
+            <br> Select your overview visualization
             <br>
-
 
 
             <div class="overviewButton btn-group">
 
-                <label class="btn btn-primary" ng-model="overview" btn-radio='"gatherplot"'> Scores </label>
-                <label class="btn btn-primary" ng-model="overview" btn-radio='"map"'> Map </label>
+                <label class="btn btn-default" ng-model="overview" btn-radio='"gatherplot"'> CommentPlot </label>
+                <label class="btn btn-default" ng-model="overview" btn-radio='"map"'> Map </label>
+                <label class="btn btn-default" ng-model="overview" btn-radio='"temporal"'> Temporal </label>
                 <!-- <label class="btn btn-primary" ng-model="baseModel" btn-radio='"Thread"'> Thread </label> -->
             </div>
 
@@ -29,31 +30,34 @@
 
 
 
-                    <div ng-show="overview=='map'">
+            <div ng-show="overview=='map'">
 
-                        <div class="gathermap" data="nomaData"> </div>
+                <div class="gathermap" data="nomaData"> </div>
 
-                    </div>
+            </div>
 
 
-                    <div ng-show="overview=='gatherplot'">
+            <div ng-show="overview=='gatherplot'">
 
-                        <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
+                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
 
-                        </div>
+                </div>
 
-                        <br>
+                {{nomaConfig.xDim}}: {{xAxisExplanation}} <br/>
+                {{nomaConfig.yDim}}: {{yAxisExplanation}}
 
-                        <div class="chart-simple-interface">
-                            <h5>Show me
+                <br>
 
-                            <select ng-model="nomaConfig.xDim" ng-options="f for f in nomaConfig.dims">
+                <div class="chart-simple-interface">
+                    <h5>Show me
+
+                            <select ng-model="nomaConfig.xDim" ng-options="f.name as f.display_text for f in criterias">
 
                                 <option value="">-- undefined --</option>
 
                             </select>&nbsp;vs&nbsp;.
 
-                            <select ng-model="nomaConfig.yDim" ng-options="f for f in nomaConfig.dims">
+                            <select ng-model="nomaConfig.yDim" ng-options="f.name as f.display_text for f in criterias">
 
                                 <option value="">-- undefined --</option>
 
@@ -70,8 +74,8 @@
             <br>
 
             <div>
-                Presets for Ranking:
-                <select class="btn btn-primary dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+                Presets for Ranking:<br>
+                <select class="btn btn-default dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
                 </select>
 
             </div>
@@ -186,7 +190,7 @@
                     <div class="commentList">
                         <dl>
                             <dt dir-paginate-start='comment in filteredComment=(nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true | filter: searchText) | itemsPerPage: 5' pagination-id="tab.status">
-                                {{comment.DisplayName}}
+                                {{comment.DisplayName}}    <div class="commentHeader"> {{comment.Location}} , {{comment.ApproveDateConverted | date:'medium'}} </div>
                             </dt>
 
 

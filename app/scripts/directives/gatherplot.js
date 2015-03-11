@@ -124,12 +124,12 @@
                                 .attr('id', 'arrowhead')
                                 .attr('viewBox', '0 -5 10 10')
                                 .attr('refX', 6)
-                                .attr('markerWidth', 3)
-                                .attr('markerHeight', 3)
+                                .attr('markerWidth', 7)
+                                .attr('markerHeight', 7)
                                 .attr('orient', 'auto')
                                 .append('svg:path')
                                 .attr('d', 'M0,-5L10,0L0,5')
-                                .attr('fill', '#000');
+                                .attr('fill', 'gray');
 
                             svgGroup = svg.append("g")
                                 .attr("transform", "translate(" + margin + "," + margin + ")");
@@ -1441,27 +1441,58 @@
 
                                             if (d.previouslySelected ^ (xScale(extent[0][0]) <= xMap(d) && xMap(d) < xScale(extent[1][0]) && yScale(extent[0][1]) >= yMap(d) && yMap(d) > yScale(extent[1][1]))) {
 
-                                                if (nodeIndex == -1) {
-                                                    scope.dimsum.selectionSpace.push(d.id);
-                                                }
+                                                // if (nodeIndex == -1) {
+                                                //     scope.dimsum.selectionSpace.push(d.id);
+                                                // }
+                                                d.selected = true;
+
                                             } else {
 
-                                                if (nodeIndex != -1) {
-                                                    scope.dimsum.selectionSpace.splice(nodeIndex, 1);
-                                                }
+                                                // if (nodeIndex != -1) {
+                                                //     scope.dimsum.selectionSpace.splice(nodeIndex, 1);
+                                                // }
+
+                                                d.selected = false;
 
 
                                             }
 
+                                            return d.selected;
+
                                         });
                                         // scope.$apply();
-                                        scope.handleDimsumChange(scope.dimsum);
+                                        // scope.handleDimsumChange(scope.dimsum);
+
+
+                                        // node.classed("selected", function(d) {
+
+                                        //     if (scope.dimsum.selectionSpace.indexOf(d.id) == -1) {
+
+                                        //         d.selected = false;
+                                        //     } else {
+
+                                        //         d.selected = true;
+                                        //     }
+
+                                        //     return d.selected;
+                                        // });
 
 
                                     })
                                     .on("brushend", function() {
                                         // d3.event.target.clear();
                                         // d3.select(this).call(d3.event.target);
+
+                                        var extent = d3.event.target.extent();
+
+                                        if (extent[0][0] === extent[1][0]) {
+                                            node.classed("selected", function(d) {
+                                                d.selected = true;
+                                                return true; 
+                                            });
+
+                                        }
+
                                         scope.$apply();
                                     }));
 
@@ -4556,8 +4587,8 @@
                                     "x": 3,
                                     "y": 15
                                 }]))
-                                .attr("stroke", "black")
-                                .attr("stroke-width", 3)
+                                .attr("stroke", "gray")
+                                .attr("stroke-width", 1)
                                 .attr("fill", "none")
                                 .classed("guideArrow");
 
@@ -4584,8 +4615,8 @@
                                     "x": width - 3,
                                     "y": 15
                                 }]))
-                                .attr("stroke", "black")
-                                .attr("stroke-width", 3)
+                                .attr("stroke", "gray")
+                                .attr("stroke-width", 1)
                                 .attr("fill", "none")
                                 .classed("guideArrow");
 
@@ -4610,8 +4641,8 @@
                                     "x": -15,
                                     "y": height - 3
                                 }]))
-                                .attr("stroke", "black")
-                                .attr("stroke-width", 3)
+                                .attr("stroke", "gray")
+                                .attr("stroke-width", 1)
                                 .attr("fill", "none")
                                 .classed("guideArrow");
 
@@ -4619,21 +4650,21 @@
                                 .attr("class", "axisnote")
                                 .style("text-anchor", "middle")
                                 .text("High")
-                            .attr('transform', function(d, i) { // NEW
-                                var vert = 23; // NEW
-                                var horz = -25; // NEW
-                                return 'translate(' + horz + ',' + vert + ')rotate(-90)'; // NEW
-                            });
+                                .attr('transform', function(d, i) { // NEW
+                                    var vert = 23; // NEW
+                                    var horz = -25; // NEW
+                                    return 'translate(' + horz + ',' + vert + ')rotate(-90)'; // NEW
+                                });
 
                             yAxisNodes.append("text")
                                 .attr("class", "axisnote")
                                 .style("text-anchor", "middle")
                                 .text("Low")
-                            .attr('transform', function(d, i) { // NEW
-                                var vert = height-23; // NEW
-                                var horz = -25; // NEW
-                                return 'translate(' + horz + ',' + vert + ')rotate(-90)'; // NEW
-                            });
+                                .attr('transform', function(d, i) { // NEW
+                                    var vert = height - 23; // NEW
+                                    var horz = -25; // NEW
+                                    return 'translate(' + horz + ',' + vert + ')rotate(-90)'; // NEW
+                                });
 
                             yAxisNodes.append("path")
                                 .attr("marker-end", "url(#arrowhead)")
@@ -4645,7 +4676,7 @@
                                     "y": 3
                                 }]))
                                 .attr("stroke", "black")
-                                .attr("stroke-width", 3)
+                                .attr("stroke-width", 1)
                                 .attr("fill", "none")
                                 .classed("guideArrow");
 
