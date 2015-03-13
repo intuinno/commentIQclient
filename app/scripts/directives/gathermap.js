@@ -18,11 +18,15 @@ angular.module('commentiqApp')
 
             link: function postLink(scope, element, attrs) {
 
+                var internalData;
+
                 scope.$watch('data', function(newVals, oldVals) {
+
+                    internalData = newVals;
 
                     mapCrossfilter.remove();
 
-                    mapCrossfilter.add(scope.data);
+                    mapCrossfilter.add(internalData);
 
                     return scope.renderDataChange();
 
@@ -37,7 +41,7 @@ angular.module('commentiqApp')
 
                 scope.renderDataChange = function() {
 
-                    chart.drawComments(scope.data);
+                    chart.drawComments(internalData);
 
                 }
 
@@ -85,18 +89,20 @@ angular.module('commentiqApp')
                 chart.on('brushended', function(brush) {
 
                     if (filteredLocations.length === 0) {
-                        scope.data.forEach(function(d) {
+                        internalData.forEach(function(d) {
                             d.selected = true;
                         });
                         // d3.select(".brush").call(brush.clear());
                     }
+
+                    scope.data = internalData;
 
                     scope.$apply();
                 });
 
                 var mapCrossfilter = crossfilter();
 
-                mapCrossfilter.add(scope.data);
+                // mapCrossfilter.add(internalData);
 
                 var location = mapCrossfilter.dimension(function(d) {
                     return [d.Longitude, d.Latitude];
@@ -139,7 +145,7 @@ angular.module('commentiqApp')
 
                     chart.drawStates(mapData);
 
-                    chart.drawComments(scope.data);
+                    chart.drawComments(internalData);
 
                     chart.updateBrush();
                 }
@@ -289,11 +295,14 @@ d3.intuinno.gathermap = function module() {
             .chargeDistance(30)
             .start();
 
+
+
         var node = svg.select('.comment-group')
             .selectAll('.commentMapMark')
             .data(dataOnScreen, function(d) {
                 return d.CommentSequence;
             });
+
 
         node.exit().remove();
 
@@ -321,6 +330,12 @@ d3.intuinno.gathermap = function module() {
             })
             .on('mouseover', dispatch.hover)
             .call(force.drag);
+
+        // var n = node.length;
+        // for (var i = 3; i > 0; --i)
+        //     force.tick();
+
+        // force.stop();
 
         function tick(e) {
             var k = .9 * e.alpha;
