@@ -42,7 +42,7 @@ angular.module('commentiqApp')
     
 
     function redirect() {
-      $location.path('/account');
+      $location.path('/browse');
     }
 
     function showError(err) {
