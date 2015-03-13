@@ -220,10 +220,10 @@
 
             // });
 
-            d3.csv('data/article3_final.csv', function(error, tdata2) {
+            d3.csv('data/article3_final_normalized.csv', function(error, tdata2) {
                 var count = 0;
 
-                d3.csv('data/article2_final.csv', function(error, tdata) {
+                d3.csv('data/article2_final_normalized.csv', function(error, tdata) {
                     var count = 0;
 
                     tdata.map(function(d) {
@@ -234,7 +234,7 @@
                         d.status = 'New';
                         d.selected = true;
 
-                        // d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
+                        d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
 
                         d.commentBody = d.commentBody.replace(/\\/g, "");
                     });
@@ -248,7 +248,7 @@
                         d.status = 'New';
                         d.selected = true;
 
-                        // d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
+                        d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
 
                         d.commentBody = d.commentBody.replace(/\\/g, "");
                     });
