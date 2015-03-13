@@ -171,14 +171,7 @@ This bar shows the weights for this ranking.
 
                     <br>
 
-                    <div class="table-responsive">
-                    <table class="table table-condensed">
-                    <tr>
-
-
-
-                    <td ng-repeat="scoreModel in scoreModels">
-                    <div>
+                    <div ng-repeat="scoreModel in scoreModels">
                         <h4> Criteria based on {{scoreModel}} score</h4>
                         <ul>
                             <li ng-repeat="criteria in criterias | filter:{model:scoreModel}">
@@ -187,13 +180,6 @@ This bar shows the weights for this ranking.
                                 <input type="range" ng-model='currentCategory.weights[criteria.name]' min="0" max="100" required>
                             </li>
                         </ul>
-
-                        <div>
-                    </td>
-
-                    </tr>
-
-                    </table>
                     </div>
                 </div>
             </div>
