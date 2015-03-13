@@ -1,7 +1,7 @@
 <ol class="breadcrumb">
     <li><a href="#">Home</a>
     </li>
-    <li><a href="#">Articles</a>
+    <li><a href="#/browse">Articles</a>
     </li>
     <li class="active">F.B.I. Director Speaks About Race</li>
 </ol>
@@ -74,20 +74,29 @@
             <br>
 
             <div>
-                Presets for Ranking:<br>
+                Presets for Ranking:                <a class="btn btn-link "  href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                    Edit <i class="fa fa-cog"></i>
+                </a>
+                <a class="btn btn-link " ng-model="currentCategory" ng-click="saveCurrentSetting()"> Add <i class="fa fa-plus"></i></a>
+<br>
                 <select class="btn btn-default dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+                </select>
+
             </div>
+                            
+
 
 
 
             <br>
 
+This bar shows the weights for this ranking.
+            <br>
+
             <div class="criteriaBarContainer">
 
                 <div class="criteriaBar" stacked-bar help="criterias" data="currentCategory"></div>
-                <a class="pull-right" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
-                    <i class="fa fa-cog fa-2x criteriaBarConfig"></i>
-                </a>
+
 
             </div>
 

@@ -1,20 +1,53 @@
-<div class="container posts-page">
-  <div class="post row" ng-repeat="chart in charts">
-    <div class="col-xs-1 col-md-1">
-    </div>
-    <div class="col-md-9 col-xs-11">
+<ol class="breadcrumb">
+    <li><a href="#">Home</a>
+    </li>
+    <li>
+        <class="active">Articles</a>
 
-      <div class="info">
-        <a ng-href="#/load/{{ chart.$id }}">
-          {{ chart.name }}
+</ol>
+
+<div class="container posts-page">
+
+    <div class="post row">
+        <div class="col-xs-1 col-md-1">
+        </div>
+        <div class="col-md-9 col-xs-11">
+
+            <div class="info">
+                <a ng-href="#/demo">
+          This demo does not require login. 
           
         </a>
-      </div>
-      <div>
-        <span>submitted by <a ng-href="#/users/{{ chart.uploader }}">{{ chart.uploaderName }}</a></span>
-        &mdash;
-        <a ng-click="deleteChart(chart)" ng-show="user.uid === chart.uploader"> <i class="fa fa-times">delete </i></a>
-      </div>
+
+
+            </div>
+
+            <span>commented by 634</span>
+
+
+        </div>
     </div>
-  </div>
+
+
+    <div class="post row" ng-repeat="article in articles">
+        <div class="col-xs-1 col-md-1">
+        </div>
+        <div class="col-md-9 col-xs-11">
+
+            <div class="info">
+                <a ng-href="#/load/{{article.index}}">
+          {{ article.title }}
+          
+        </a>
+
+
+            </div>
+
+            <span>commented by {{ article.numComments }}</span>
+
+
+        </div>
+    </div>
+
+
 </div>

@@ -118,47 +118,47 @@
         return fns;
     })
 
-    .factory('createProfile', function(fbutil, $q, $timeout) {
+    .factory('createProfile', function(fbutil, $q, $timeout, $firebaseObject, FBURL) {
         return function(id, email, name) {
             var ref = fbutil.ref('users', id),
                 def = $q.defer();
 
-            var comment1;
+            var newRef = new Firebase(FBURL + '/users/' + id);
+            var fbObj = $firebaseObject(newRef);
 
-
-        var presetCategory = [{
-            name: 'Default',
-            weights: {
-                ArticleRelevance: 80,
-                ConversationalRelevance: 70,
-                AVGcommentspermonth: 0,
-                AVGBrevity: 0,
-                AVGPersonalXP: 0,
-                AVGPicks: 0,
-                AVGReadability: 0,
-                AVGRecommendationScore: 0,
-                Brevity: 60,
-                PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
-            }
-        }, {
-            name: 'User Score',
-            weights: {
-                ArticleRelevance: 0,
-                ConversationalRelevance: 0,
-                AVGcommentspermonth: 90,
-                AVGBrevity: 80,
-                AVGPersonalXP: 90,
-                AVGPicks: 90,
-                AVGReadability: 90,
-                AVGRecommendationScore: 90,
-                Brevity: 0,
-                PersonalXP: 0,
-                Readability: 0,
-                RecommendationScore: 0
-            }
-        }];
+            var presetCategory = [{
+                name: 'Default',
+                weights: {
+                    ArticleRelevance: 80,
+                    ConversationalRelevance: 70,
+                    AVGcommentspermonth: 0,
+                    AVGBrevity: 0,
+                    AVGPersonalXP: 0,
+                    AVGPicks: 0,
+                    AVGReadability: 0,
+                    AVGRecommendationScore: 0,
+                    Brevity: 60,
+                    PersonalXP: 50,
+                    Readability: 40,
+                    RecommendationScore: 30
+                }
+            }, {
+                name: 'User Score',
+                weights: {
+                    ArticleRelevance: 0,
+                    ConversationalRelevance: 0,
+                    AVGcommentspermonth: 90,
+                    AVGBrevity: 80,
+                    AVGPersonalXP: 90,
+                    AVGPicks: 90,
+                    AVGReadability: 90,
+                    AVGRecommendationScore: 90,
+                    Brevity: 0,
+                    PersonalXP: 0,
+                    Readability: 0,
+                    RecommendationScore: 0
+                }
+            }];
 
 
             d3.csv('data/commentScore_geo_user.csv', function(error, tdata) {
@@ -178,25 +178,97 @@
                 });
 
                 ref.set({
-                email: email,
-                name: name || firstPartOfEmail(email),
-                preset: presetCategory,
-                comment1: tdata
-            }, function(err) {
-                $timeout(function() {
-                    if (err) {
-                        def.reject(err);
-                    } else {
-                        def.resolve(ref);
-                    }
+                    email: email,
+                    name: name || firstPartOfEmail(email),
+                    preset: presetCategory,
+                    comment0: tdata
+                }, function(err) {
+                    $timeout(function() {
+                        if (err) {
+                            def.reject(err);
+                        } else {
+                            def.resolve(ref);
+                        }
+                    });
+
                 });
-
-
 
             });
 
+            // d3.csv('data/article2_final.csv', function(error, tdata) {
+            //     var count = 0;
 
-            
+            //     tdata.map(function(d) {
+            //         d.id = count;
+            //         count += 1;
+
+            //         // var randomNumber = Math.floor(Math.random() * $scope.statusArray.length);
+            //         d.status = 'New';
+            //         d.selected = true;
+
+            //         // d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
+
+            //         // d.commentBody = d.commentBody.replace(/\\/g, "");
+            //     });
+
+            //     fbObj.hello = tdata;
+            //     fbObj.$save().then(function() {
+            //         console.log('Profile saved to Firebase!');
+            //     }).catch(function(error) {
+            //         console.log('Error!');
+            //     });
+
+            // });
+
+            d3.csv('data/article3_final.csv', function(error, tdata2) {
+                var count = 0;
+
+                d3.csv('data/article2_final.csv', function(error, tdata) {
+                    var count = 0;
+
+                    tdata.map(function(d) {
+                        d.id = count;
+                        count += 1;
+
+                        // var randomNumber = Math.floor(Math.random() * $scope.statusArray.length);
+                        d.status = 'New';
+                        d.selected = true;
+
+                        // d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
+
+                        d.commentBody = d.commentBody.replace(/\\/g, "");
+                    });
+
+
+                    tdata2.map(function(d) {
+                        d.id = count;
+                        count += 1;
+
+                        // var randomNumber = Math.floor(Math.random() * $scope.statusArray.length);
+                        d.status = 'New';
+                        d.selected = true;
+
+                        // d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
+
+                        d.commentBody = d.commentBody.replace(/\\/g, "");
+                    });
+
+                    ref.update({
+                        comment2: tdata2,
+                        comment1: tdata
+                    }, function(err) {
+                        $timeout(function() {
+                            if (err) {
+                                def.reject(err);
+                            } else {
+                                def.resolve(ref);
+                            }
+                        });
+
+                    });
+
+                });
+
             });
 
             function firstPartOfEmail(email) {

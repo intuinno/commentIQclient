@@ -13,8 +13,12 @@ angular.module('commentiqApp')
 // which should only be available while logged in
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider
-        .when('/', {
+        .when('/demo', {
             templateUrl: 'views/main.html',
+            controller: 'MainCtrl'
+        })
+        .when('/', {
+            templateUrl: 'views/intro.html',
             controller: 'MainCtrl'
         })
         .when('/login', {
@@ -29,7 +33,7 @@ angular.module('commentiqApp')
             templateUrl: 'views/browse.html',
             controller: 'BrowseCtrl'
         })
-        .whenAuthenticated('/load', {
+        .whenAuthenticated('/load/:articleKey', {
             templateUrl: 'views/load.html',
             controller: 'LoadCtrl'
         })
