@@ -42,7 +42,7 @@ angular.module('commentiqApp')
 
                 }
 
-                var width = d3.select(element[0]).node().offsetWidth - 30,
+                var width = d3.select(element[0]).node().offsetWidth ,
                     height = 50;
 
                 var chart = d3.intuinno.stackedBar()
@@ -54,7 +54,7 @@ angular.module('commentiqApp')
 
                 function resize() {
 
-                    width = d3.select(element[0]).node().offsetWidth - 30;
+                    width = d3.select(element[0]).node().offsetWidth;
                     height = 50;
 
                     chart.size([width, height]);
@@ -85,9 +85,9 @@ d3.intuinno.stackedBar = function module() {
 
     var margin = {
             top: 10,
-            right: 10,
+            right: 0,
             bottom: 10,
-            left: 10
+            left: 0
         },
         width = 500,
         height = 80,

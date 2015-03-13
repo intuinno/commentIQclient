@@ -1,14 +1,129 @@
 'use strict';
-
 /**
  * @ngdoc function
- * @name commentiqApp.controller:MainCtrl
+ * @name muck2App.controller:AccountCtrl
  * @description
- * # MainCtrl
- * Controller of the commentiqApp
+ * # AccountCtrl
+ * Provides rudimentary account management functions.
  */
+
+
 angular.module('commentiqApp')
-    .controller('MainCtrl', function($scope, $modal, $log) {
+    .controller('LoadCtrl', function($scope, user, simpleLogin, fbutil, $timeout, FBURL, $firebaseArray, $modal) {
+        $scope.user = user;
+        $scope.logout = simpleLogin.logout;
+        $scope.messages = [];
+        var profile;
+        loadProfile(user);
+
+        $scope.changePassword = function(oldPass, newPass, confirm) {
+            $scope.err = null;
+            if (!oldPass || !newPass) {
+                error('Please enter all fields');
+            } else if (newPass !== confirm) {
+                error('Passwords do not match');
+            } else {
+                simpleLogin.changePassword(profile.email, oldPass, newPass)
+                    .then(function() {
+                        success('Password changed');
+                    }, error);
+            }
+        };
+
+        $scope.currentCategory = {
+            name: 'Best based on comment',
+            weights: {
+                ArticleRelevance: 80,
+                ConversationalRelevance: 70,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
+                AVGPicks: 0,
+                AVGReadability: 0,
+                AVGRecommendationScore: 0,
+                Brevity: 60,
+                PersonalXP: 50,
+                Readability: 40,
+                RecommendationScore: 30
+            }
+        };
+
+        $scope.changeEmail = function(pass, newEmail) {
+            $scope.err = null;
+            simpleLogin.changeEmail(pass, newEmail, profile.email)
+                .then(function() {
+                    profile.email = newEmail;
+                    profile.$save();
+                    success('Email changed');
+                })
+                .catch(error);
+        };
+
+        function error(err) {
+            alert(err, 'danger');
+        }
+
+        function success(msg) {
+            alert(msg, 'success');
+        }
+
+        function alert(msg, type) {
+            var obj = {
+                text: msg + '',
+                type: type
+            };
+            $scope.messages.unshift(obj);
+            $timeout(function() {
+                $scope.messages.splice($scope.messages.indexOf(obj), 1);
+            }, 10000);
+        }
+
+        function loadProfile(user) {
+            if (profile) {
+                profile.$destroy();
+            }
+
+            // $scope.nomaData = fbutil.syncArray('users/' + user.uid + '/comment1', orderByPriority);
+            var rootRef = new Firebase(FBURL + '/users');
+            rootRef.child(user.uid + '/comment1').once("value", function(snapshot) {
+
+                console.log(snapshot.val());
+
+                $scope.nomaData = snapshot.val();
+
+                var ref = new Firebase("https://commentiq.firebaseio.com/users/" + user.uid + '/preset');
+
+                $scope.presetCategory = $firebaseArray(ref);
+
+                $scope.presetCategory.$loaded().then(function(product) {
+
+                    $scope.currentCategory = $scope.presetCategory[0];
+
+                    updateScore();
+
+                    $scope.nomaConfig.dims = d3.keys($scope.nomaData[0]);
+
+                    var index = $scope.nomaConfig.dims.indexOf('id');
+                    $scope.nomaConfig.dims.splice(index, 1);
+
+
+                    // index = $scope.nomaConfig.dims.indexOf('Name');
+                    // $scope.nomaConfig.dims.splice(index, 1);
+
+
+                    $scope.nomaConfig.xDim = 'ArticleRelevance';
+                    $scope.nomaConfig.yDim = 'PersonalXP';
+                    $scope.nomaConfig.colorDim = 'status';
+
+                    $scope.nomaConfig.isGather = 'scatter';
+                    $scope.nomaConfig.relativeMode = 'absolute';
+
+                   
+                });
+
+            });
+        }
+
 
         $scope.statusArray = ['New', 'Accepted', 'Rejected', 'Picked'];
 
@@ -92,74 +207,6 @@ angular.module('commentiqApp')
         }];
 
 
-        $scope.presetCategory = [{
-            name: 'Best based on comment',
-            weights: {
-                ArticleRelevance: 80,
-                ConversationalRelevance: 70,
-                AVGcommentspermonth: 0,
-                AVGBrevity: 0,
-                AVGPersonalXP: 0,
-                AVGPicks: 0,
-                AVGReadability: 0,
-                AVGRecommendationScore: 0,
-                Brevity: 60,
-                PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
-            }
-        }, {
-            name: 'Informative comment',
-            weights: {
-                ArticleRelevance: 71,
-                ConversationalRelevance: 70,
-                AVGcommentspermonth: 0,
-                AVGBrevity: 0,
-                AVGPersonalXP: 0,
-                AVGPicks: 0,
-                AVGReadability: 0,
-                AVGRecommendationScore: 0,
-                Brevity: 60,
-                PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
-            }
-        }, {
-            name: 'Unexpected comment',
-            weights: {
-                ArticleRelevance: 62,
-                ConversationalRelevance: 70,
-                AVGcommentspermonth: 0,
-                AVGBrevity: 0,
-                AVGPersonalXP: 0,
-                AVGPicks: 0,
-                AVGReadability: 0,
-                AVGRecommendationScore: 0,
-                Brevity: 60,
-                PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
-            },
-        }, {
-            name: 'Written by best user',
-            weights: {
-                ArticleRelevance: 0,
-                ConversationalRelevance: 0,
-                AVGcommentspermonth: 90,
-                AVGBrevity: 80,
-                AVGPersonalXP: 90,
-                AVGPicks: 90,
-                AVGReadability: 90,
-                AVGRecommendationScore: 90,
-                Brevity: 0,
-                PersonalXP: 0,
-                Readability: 0,
-                RecommendationScore: 0
-            }
-        }];
-
-
-        $scope.currentCategory = $scope.presetCategory[0];
 
         $scope.nomaData = [];
         $scope.isSettingCollapsed = true;
@@ -285,7 +332,7 @@ angular.module('commentiqApp')
         $scope.saveCurrentSetting = function() {
 
             var modalInstance = $modal.open({
-                templateUrl: 'settingNameModal.html',
+                templateUrl: 'settingNameModalLoad.html',
                 controller: 'settingNameModalCtrl',
                 size: 'sm',
                 resolve: {
@@ -297,22 +344,22 @@ angular.module('commentiqApp')
 
             modalInstance.result.then(function(settingName) {
 
-                $log.info(settingName);
+                // $log.info(settingName);
 
                 var newSetting = angular.copy($scope.currentCategory);
                 newSetting.name = settingName;
 
-                $scope.presetCategory.push(newSetting);
+                $scope.presetCategory.$add(newSetting);
 
             }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
+                console.log('Modal dismissed at: ' + new Date());
             });
         };
 
         $scope.openHelpModalForCriteria = function() {
 
             var modalInstance = $modal.open({
-                templateUrl: 'helpCriteriaModal.html',
+                templateUrl: 'helpCriteriaModalLoad.html',
                 controller: 'HelpCriteriaModalCtrl',
                 size: 'lg',
                 resolve: {
@@ -324,10 +371,34 @@ angular.module('commentiqApp')
 
         };
 
+        $scope.acceptComment = function(comment) {
+
+            var rootRef = new Firebase('https://commentiq.firebaseio.com/users/' + user.uid + '/comment1');
+
+            comment.status = 'Accepted';
+
+            rootRef.child(comment.id).update({
+                'status': 'Accepted',
+            }, function(error) {
+                if (error) {
+                    console.log("Data could not be saved." + error);
+                } else {
+                    console.log("Data saved successfully.");
+                }
+            });
+
+        };
+
+        $scope.rejectComment = function(comment) {
+            comment.status = 'Rejected';
+        }
+
+
+
         $scope.pickReason = function(comment) {
 
             var modalInstance = $modal.open({
-                templateUrl: 'pickReason.html',
+                templateUrl: 'pickReasonLoad.html',
                 controller: 'PickReasonModalCtrl',
                 size: 'sm',
                 resolve: {
@@ -341,60 +412,42 @@ angular.module('commentiqApp')
 
             modalInstance.result.then(function(result) {
 
-                $log.info(result);
+                console.log(result);
 
                 comment.pickTags = result;
 
             }, function() {
-                $log.info('Modal dismissed at: ' + new Date());
+                console.log('Modal dismissed at: ' + new Date());
             });
 
         };
 
 
+
         $scope.loadData = function() {
 
-            d3.csv('data/commentScore_geo_user.csv', function(error, tdata) {
-                var count = 0;
+            // updateScore();
 
-                tdata.map(function(d) {
-                    d.id = count;
-                    count += 1;
+            // $scope.nomaConfig.dims = d3.keys($scope.nomaData[0]);
 
-                    // var randomNumber = Math.floor(Math.random() * $scope.statusArray.length);
-                    d.status = 'New';
-                    d.selected = true;
-
-                    d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g,''));
-
-                    d.commentBody = d.commentBody.replace(/\\/g, "");
-                });
+            // var index = $scope.nomaConfig.dims.indexOf('id');
+            // $scope.nomaConfig.dims.splice(index, 1);
 
 
-                $scope.nomaData = tdata;
-
-                updateScore();
-
-                $scope.nomaConfig.dims = d3.keys(tdata[0]);
-
-                var index = $scope.nomaConfig.dims.indexOf('id');
-                $scope.nomaConfig.dims.splice(index, 1);
+            // // index = $scope.nomaConfig.dims.indexOf('Name');
+            // // $scope.nomaConfig.dims.splice(index, 1);
 
 
-                // index = $scope.nomaConfig.dims.indexOf('Name');
-                // $scope.nomaConfig.dims.splice(index, 1);
+            // $scope.nomaConfig.xDim = 'ArticleRelevance';
+            // $scope.nomaConfig.yDim = 'PersonalXP';
+            // $scope.nomaConfig.colorDim = 'status';
+
+            // $scope.nomaConfig.isGather = 'scatter';
+            // $scope.nomaConfig.relativeMode = 'absolute';
+
+            // $scope.$apply();
 
 
-                $scope.nomaConfig.xDim = 'ArticleRelevance';
-                $scope.nomaConfig.yDim = 'PersonalXP';
-                $scope.nomaConfig.colorDim = 'status';
-
-                $scope.nomaConfig.isGather = 'scatter';
-                $scope.nomaConfig.relativeMode = 'absolute';
-
-                $scope.$apply();
-
-            });
 
         };
 

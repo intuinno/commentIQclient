@@ -76,7 +76,15 @@
             <div>
                 Presets for Ranking:<br>
                 <select class="btn btn-default dropdown-toggle" ng-model="currentCategory" ng-options="f.name for f in presetCategory">
+                </select>
+
             </div>
+                                            <a class="btn btn-link "  href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
+                    Edit <i class="fa fa-cog"></i>
+                </a>
+                <a class="btn btn-link " ng-model="currentCategory" ng-click="saveCurrentSetting()"> Add <i class="fa fa-plus"></i></a>
+
+
 
 
 
@@ -85,13 +93,11 @@
             <div class="criteriaBarContainer">
 
                 <div class="criteriaBar" stacked-bar help="criterias" data="currentCategory"></div>
-                <a class="pull-right" href="" ng-click="isSettingCollapsed=!isSettingCollapsed">
-                    <i class="fa fa-cog fa-2x criteriaBarConfig"></i>
-                </a>
+
 
             </div>
 
-            <script type="text/ng-template" id="settingNameModal.html">
+            <script type="text/ng-template" id="settingNameModalLoad.html">
                 <div class="modal-header">
                     <h3 class="modal-title">Please enter the name for new setting</h3>
                 </div>
@@ -106,7 +112,7 @@
             </script>
 
 
-            <script type="text/ng-template" id="helpCriteriaModal.html">
+            <script type="text/ng-template" id="helpCriteriaModalLoad.html">
                 <div class="modal-header">
                     <h3 class="modal-title">Help for Criteria</h3>
                 </div>
@@ -135,7 +141,7 @@
                 </div>
             </script>
 
-            <script type="text/ng-template" id="pickReason.html">
+            <script type="text/ng-template" id="pickReasonLoad.html">
                 <div class="modal-header">
                     <h3 class="modal-title">Please select all that apply to this comment.</h3>
                 </div>
@@ -202,16 +208,16 @@
 
 
                                 <div ng-bind-html="comment.commentBody"></div>
-
+<!-- 
                                 <br> score = {{comment.score}}
-                                <br> brush = {{comment.selected}}
-                                <br> &nbsp;
+                                <br> brush = {{comment.selected}} -->
+                                <!-- <br> &nbsp; -->
                             </dd>
 
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="acceptComment(comment)" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="rejectComment(comment)" ng-hide="status=='Rejected'">Reject</a>
                             <a href="" class="btn btn-link btn-default" ng-click="pickReason(comment)" ng-hide="status=='Picked'">Pick</a>
-                            <hr>
+                            <hr> <br/>
                             <br dir-paginate-end>
                         </dl>
                     </div>
