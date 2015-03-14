@@ -14,7 +14,7 @@ angular.module('commentiqApp')
 .config(['$routeProvider', function($routeProvider) {
     $routeProvider
         .when('/demo', {
-            templateUrl: 'views/main.html',
+            templateUrl: 'views/load.html',
             controller: 'MainCtrl'
         })
         .when('/', {

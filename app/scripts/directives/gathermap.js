@@ -328,12 +328,13 @@ d3.intuinno.gathermap = function module() {
 
                 return "commentMapMark " + d.status + " " + selectionStatus;
             })
-            .on('mouseover', dispatch.hover)
-            .call(force.drag);
+            .on('mouseover', dispatch.hover);
+            // .call(force.drag);
 
         // var n = node.length;
         // for (var i = 3; i > 0; --i)
-        //     force.tick();
+        // force.start();
+        //     force.tick({alpha:1});
 
         // force.stop();
 

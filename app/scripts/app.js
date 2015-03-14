@@ -20,7 +20,6 @@ angular.module('commentiqApp', [
         'ui.bootstrap',
         'angularUtils.directives.dirPagination',
         'ui.select',
-        'angular-carousel',
         'simpleLogin'
     ])
     .config(function(paginationTemplateProvider) {

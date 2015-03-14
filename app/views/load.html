@@ -38,12 +38,12 @@
 
             <div ng-show="overview=='gatherplot'">
 
-                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment">
+                <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment" criterias="criterias">
 
                 </div>
 
-                {{nomaConfig.xDim}}: {{xAxisExplanation}}
-                <br/> {{nomaConfig.yDim}}: {{yAxisExplanation}}
+                <h5>{{xAxisExplanation.display_text}} <small> {{xAxisExplanation.help_text}} </small></h5>
+                 <h5>{{yAxisExplanation.display_text}}: <small>{{yAxisExplanation.help_text}}</small></h5>
 
                 <br>
 
@@ -121,7 +121,7 @@ This bar shows the weights for this ranking.
                     <dl>
 
                         <dt ng-repeat-start="criteria in criterias">
-                            <br> {{criteria.name}}
+                            <br> {{criteria.display_text}}
 
                         </dt>
 
@@ -180,13 +180,13 @@ This bar shows the weights for this ranking.
                     <td ng-repeat="scoreModel in scoreModels">
                     <div>
                         <h4> Criteria based on {{scoreModel}} score</h4>
-                        <ul>
-                            <li ng-repeat="criteria in criterias | filter:{model:scoreModel}">
+                        
+                            <div ng-repeat="criteria in criterias | filter:{model:scoreModel}">
                                 <span popover="{{criteria.help_text}}" popover-trigger="mouseenter">{{criteria.display_text}} <a href="" class="btn btn-link btn-default" ng-click="openHelpModalForCriteria()"><i class="fa fa-question-circle"></i> </a> </span> : {{currentCategory.weights[criteria.name]}}
 
                                 <input type="range" ng-model='currentCategory.weights[criteria.name]' min="0" max="100" required>
-                            </li>
-                        </ul>
+                            </div>
+                        
 
                         <div>
                     </td>
@@ -197,11 +197,8 @@ This bar shows the weights for this ranking.
                     </div>
                 </div>
             </div>
-            <br>
 
             <input type="text" ng-model='searchText' class="form-control" placeholder="Search for...">
-
-
 
 
             <tabset>

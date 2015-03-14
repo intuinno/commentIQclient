@@ -303,7 +303,7 @@ angular.module('commentiqApp')
                 return 'undefined';
             } else {
 
-                return filtered[0].help_text;
+                return filtered[0];
                 $
             }
         }

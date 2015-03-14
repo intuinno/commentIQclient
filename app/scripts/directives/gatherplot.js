@@ -17,6 +17,7 @@
                         dimsum: "=",
                         context: "=",
                         comment: "=",
+                        criterias: "=",
                         onClick: '&'
                     },
 
@@ -1380,6 +1381,8 @@
 
                             configBrush();
 
+
+
                         };
 
                         var configZoomToolbar = function() {
@@ -1488,7 +1491,7 @@
                                         if (extent[0][0] === extent[1][0]) {
                                             node.classed("selected", function(d) {
                                                 d.selected = true;
-                                                return true; 
+                                                return true;
                                             });
 
                                         }
@@ -1697,6 +1700,8 @@
                             drawMask();
 
                             drawAxesAndLegends();
+
+                            // drawGuideLine();
 
                         };
 
@@ -4555,6 +4560,23 @@
                         };
 
 
+                        var findDisplayName = function(dimName) {
+                            var filtered = scope.criterias.filter(function(d) {
+                                return d.name === dimName ? true : false;
+                            });
+
+                            if (filtered.length === 0) {
+
+                                return 'undefined';
+                            } else {
+
+                                return filtered[0].display_text;
+                                $
+                            }
+                        };
+
+
+
                         var drawAxesLabel = function() {
 
                             // svg.select("defs").remove();
@@ -4567,7 +4589,7 @@
                                 .attr("x", width / 2)
                                 .attr("y", 25)
                                 .style("text-anchor", "middle")
-                                .text(scope.xdim);
+                                .text(findDisplayName(scope.xdim));
 
                             var lineFunction = d3.svg.line()
                                 .x(function(d) {
@@ -4625,7 +4647,7 @@
                                 .append("text")
                                 .attr("class", "axislabel")
                                 .style("text-anchor", "middle")
-                                .text(scope.ydim)
+                                .text(findDisplayName(scope.ydim))
                                 .attr('transform', function(d, i) { // NEW
                                     var vert = height / 2; // NEW
                                     var horz = -margin / 2; // NEW
