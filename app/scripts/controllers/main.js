@@ -325,10 +325,30 @@ angular.module('commentiqApp')
 
         };
 
+           $scope.acceptComment = function(comment) {
+
+            comment.status = 'Accepted';
+
+            // updateCommentStatus(comment.id, 'status', comment.status);
+
+
+        };
+
+
+
+        $scope.rejectComment = function(comment) {
+            comment.status = 'Rejected';
+
+            // updateCommentStatus(comment.id, 'status', comment.status);
+        }
+
+
+
+
         $scope.pickReason = function(comment) {
 
             var modalInstance = $modal.open({
-                templateUrl: 'pickReason.html',
+                templateUrl: 'pickReasonLoad.html',
                 controller: 'PickReasonModalCtrl',
                 size: 'sm',
                 resolve: {

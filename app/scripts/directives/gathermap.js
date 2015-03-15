@@ -22,6 +22,14 @@ angular.module('commentiqApp')
 
                 scope.$watch('data', function(newVals, oldVals) {
 
+                    if (newVals.length === 0) {
+                        return;
+                    }
+
+                    if (newVals.length === oldVals.length) {
+                        return scope.renderColorChange();
+                    }
+
                     internalData = newVals;
 
                     mapCrossfilter.remove();
@@ -42,6 +50,13 @@ angular.module('commentiqApp')
                 scope.renderDataChange = function() {
 
                     chart.drawComments(internalData);
+
+                }
+
+
+                scope.renderColorChange = function() {
+
+                    chart.drawClass(internalData);
 
                 }
 
@@ -131,6 +146,10 @@ angular.module('commentiqApp')
 
                 function resize() {
 
+                    if (!mapData || internalData.length === 0) {
+                        return;
+                    }
+
                     width = d3.select(element[0]).node().parentNode.parentNode.offsetWidth;
                     height = width * 0.7;
 
@@ -141,7 +160,8 @@ angular.module('commentiqApp')
                         .attr('height', height)
                         .call(chart);
 
-                    // chart.reset();
+
+
 
                     chart.drawStates(mapData);
 
@@ -340,6 +360,7 @@ d3.intuinno.gathermap = function module() {
 
         function tick(e) {
             var k = .9 * e.alpha;
+            console.log(e.alpha);
 
             node
                 .attr("cx", function(o) {
@@ -356,6 +377,45 @@ d3.intuinno.gathermap = function module() {
                 });
         }
 
+
+
+    };
+
+
+    exports.drawClass = function(_data) {
+
+        var node;
+
+        var dataOnScreen = _data.filter(function(d) {
+
+            var a = projection([+d.Longitude, +d.Latitude]);
+
+            if (isNaN(a[0])) {
+                return false;
+            }
+            return a;
+        });
+
+        node = svg.select('.comment-group')
+            .selectAll('.commentMapMark')
+            .data(dataOnScreen, function(d) {
+                return d.CommentSequence;
+            });
+
+
+
+        node.attr('class', function(d) {
+
+            var selectionStatus;
+
+            if (d.selected) {
+                selectionStatus = 'selected';
+            } else {
+                selectionStatus = 'notSelected';
+            }
+
+            return "commentMapMark " + d.status + " " + selectionStatus;
+        });
 
 
     };

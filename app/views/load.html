@@ -240,27 +240,25 @@ This bar shows the weights for this ranking.
                     <div class="commentList">
                         <dl>
                             <dt dir-paginate-start='comment in nomaData |orderBy:"score":true| itemsPerPage: 5' pagination-id="All">
-                                {{comment.DisplayName}}
+                                 {{comment.DisplayName}}    <div class="commentHeader"> {{comment.Location}} , {{comment.ApproveDateConverted | date:'medium'}} </div>
                             </dt>
 
 
 
                             <dd>
 
-                                {{comment.display_name}}
-                                <br>
+
                                 <div ng-bind-html="comment.commentBody"></div>
+<!-- 
                                 <br> score = {{comment.score}}
-                                <br> brush = {{comment.selected}}
-                                <br> &nbsp;
+                                <br> brush = {{comment.selected}} -->
+                                <!-- <br> &nbsp; -->
                             </dd>
 
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Accepted'" ng-hide="status=='Accepted'">Accept</a>
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Rejected'" ng-hide="status=='Rejected'">Reject</a>
-                            <a href="" class="btn btn-link btn-default" ng-click="comment.status='Picked'" ng-hide="status=='Picked'">Pick</a>
-
-
-                            <hr>
+                            <a href="" class="btn btn-link btn-default" ng-click="acceptComment(comment)" ng-hide="status=='Accepted'">Accept</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="rejectComment(comment)" ng-hide="status=='Rejected'">Reject</a>
+                            <a href="" class="btn btn-link btn-default" ng-click="pickReason(comment)" ng-hide="status=='Picked'">Pick</a>
+                            <hr> <br/>
                             <br dir-paginate-end>
                         </dl>
                     </div>
