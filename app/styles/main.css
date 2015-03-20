@@ -1,3 +1,49 @@
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.overview {
+    width: 100%;
+    /* height: 100%; */
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+
+.brush rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brush .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+.brushTempo rect.extent {
+  fill: steelblue;
+  fill-opacity: .125;
+}
+
+.brushTempo .resize path {
+  fill: #eee;
+  stroke: #666;
+}
+
+
+.background.bar {
+  fill: #ccc;
+}
+
+.foreground.bar {
+  fill: steelblue;
+}
+
+
 .commentHeader {
     display: inline;
     color: gray;

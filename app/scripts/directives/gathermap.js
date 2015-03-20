@@ -175,7 +175,7 @@ angular.module('commentiqApp')
     });
 
 
-d3.intuinno = {};
+d3.intuinno = d3.intuinno || {};
 
 d3.intuinno.gathermap = function module() {
 
@@ -360,7 +360,7 @@ d3.intuinno.gathermap = function module() {
 
         function tick(e) {
             var k = .9 * e.alpha;
-            console.log(e.alpha);
+            // console.log(e.alpha);
 
             node
                 .attr("cx", function(o) {

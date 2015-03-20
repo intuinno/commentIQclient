@@ -108,7 +108,7 @@ d3.intuinno.stackedBar = function module() {
                 chartH = height - margin.top - margin.bottom;
 
             var nonZeroData = _data.filter(function(d) {
-                return d.value !== 0;
+                return d.value > 0;
             });
 
             var x0 = 0

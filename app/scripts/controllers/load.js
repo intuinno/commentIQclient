@@ -38,18 +38,19 @@ angular.module('commentiqApp')
         $scope.currentCategory = {
             name: 'Best based on comment',
             weights: {
-                ArticleRelevance: 80,
-                ConversationalRelevance: 70,
-                AVGcommentspermonth: 0,
-                AVGBrevity: 0,
-                AVGPersonalXP: 0,
-                AVGPicks: 0,
-                AVGReadability: 0,
-                AVGRecommendationScore: 0,
-                Brevity: 60,
-                PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
+
+                ArticleRelevance: 7.86201737048,
+                AVGcommentspermonth: 4.35852419981,
+                AVGBrevity: 5.1970003667,
+                AVGPersonalXP: -9.32348508211,
+                AVGPicks: 38.9927375598,
+                AVGReadability: -6.49269894463,
+                AVGRecommendationScore: -28.166889932,
+                Brevity: 7.06683779322,
+                ConversationalRelevance: -23.1689392323,
+                PersonalXP: -3.41660411201,
+                Readability: 38.3964425234,
+                RecommendationScore: 100.0
             }
         };
 
@@ -168,7 +169,7 @@ angular.module('commentiqApp')
             model: "user"
         }, {
             name: 'AVGBrevity',
-            display_text: "User Brevity",
+            display_text: "User Length",
             help_text: "This score represents the average brevity score for a user across their entire history. ",
             model: "user"
         }, {
@@ -193,7 +194,7 @@ angular.module('commentiqApp')
             model: "user"
         }, {
             name: 'Brevity',
-            display_text: "Brevity of comments",
+            display_text: "Length of comments",
             help_text: "This score represents how short a comment is, measured in terms of the number of words. ",
             model: "comment"
         }, {
@@ -308,11 +309,24 @@ angular.module('commentiqApp')
             }
         }
 
+        function updateCriteriaWeightTypes() {
+
+            var p = $scope.currentCategory.weights;
+
+            for (var key in p) {
+                if (p.hasOwnProperty(key)) {
+                    // alert(key + " -> " + p[key]);
+                    p[key] = parseFloat(p[key]);
+                }
+            }
+        };
+
         $scope.$watch(function() {
             return $scope.currentCategory;
         }, function(newVals, oldVals) {
             // debugger;
 
+            updateCriteriaWeightTypes();
             updateScore();
 
         }, true);
@@ -394,14 +408,14 @@ angular.module('commentiqApp')
             temp[field] = value;
 
             rootRef.child(id).update(
-                temp
-            , function(error) {
-                if (error) {
-                    console.log("Data could not be saved." + error);
-                } else {
-                    console.log("Data saved successfully.");
-                }
-            });
+                temp,
+                function(error) {
+                    if (error) {
+                        console.log("Data could not be saved." + error);
+                    } else {
+                        console.log("Data saved successfully.");
+                    }
+                });
         }
 
 
