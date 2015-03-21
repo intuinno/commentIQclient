@@ -3429,7 +3429,7 @@
                                         selectionStatus = 'notSelected';
                                     }
 
-                                    return "commentMapMark " + d.status + " " + selectionStatus;
+                                    return "dot commentMapMark " + d.status + " " + selectionStatus;
                                 })
                                 .transition()
                                 .duration(1500)

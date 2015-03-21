@@ -201,10 +201,10 @@ ul[rn-carousel] {
     border-top: 1px solid lightgray;
     border-bottom: 1px solid lightgray;
 }
-.dot.selected {
+/*.dot.selected {
     stroke: red;
     stroke-width: 3;
-}
+}*/
 .brush .extent {
     fill-opacity: .1;
     stroke: #fff;
@@ -464,9 +464,9 @@ svg {
   shape-rendering: geometricPrecision;
 }*/
 
-.dot {
+/*.dot {
     stroke-width: 1;
-}
+}*/
 .collapse-text-toggle {
     font-size: 0.9em;
     color: #666666;

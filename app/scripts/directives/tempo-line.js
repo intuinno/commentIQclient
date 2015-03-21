@@ -119,7 +119,7 @@ angular.module('commentiqApp')
                         return;
                     }
 
-                    width = d3.select(element[0]).node().parentNode.parentNode.offsetWidth;
+                    width = d3.select(element[0]).node().parentNode.parentNode.offsetWidth-50;
                     height = width * 0.7;
 
                     data.forEach(function(d, i) {
@@ -197,7 +197,7 @@ function barChart() {
             left: 50
         },
         x,
-        y = d3.scale.linear().range([200, 0]),
+        y = d3.scale.linear().range([300, 0]),
         id = barChart.id++,
         // axis = d3.svg.axis().orient("bottom").tickFormat(d3.time.format("%I%p, %d")),
         axis = d3.svg.axis().orient("bottom"),

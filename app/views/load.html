@@ -29,7 +29,7 @@
                     <h5>{{tempoDimExplanation.display_text}}
                 <small> {{tempoDimExplanation.help_text}}</small>
             </h5>
-                    <select ng-model="tempoDim" ng-options="f.name as f.display_text for f in criterias">
+                    <select class="btn btn-default dropdown-toggle" ng-model="tempoDim" ng-options="f.name as f.display_text for f in criterias">
                         <option value="">Number of Comment</option>
                     </select>
                 </div>
@@ -47,13 +47,13 @@
                 <div class="chart-simple-interface">
                     <h5>Show me
 
-                    <select ng-model="nomaConfig.xDim" ng-options="f.name as f.display_text for f in criterias">
+                    <select class="btn btn-default dropdown-toggle" ng-model="nomaConfig.xDim" ng-options="f.name as f.display_text for f in criterias">
 
                         <option value="">-- undefined --</option>
 
                     </select>&nbsp;vs&nbsp;.
 
-                    <select ng-model="nomaConfig.yDim" ng-options="f.name as f.display_text for f in criterias">
+                    <select class="btn btn-default dropdown-toggle" ng-model="nomaConfig.yDim" ng-options="f.name as f.display_text for f in criterias">
 
                         <option value="">-- undefined --</option>
 
