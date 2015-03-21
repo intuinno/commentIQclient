@@ -173,6 +173,9 @@
             <a href="" class="btn btn-link btn-default" ng-click="openHelpModalForCriteria()"><i
                     class="fa fa-question-circle"></i> Help </a>
 
+                               <a href="" class="btn btn-link btn-default" ng-click="clearSetting()"><i
+                    class="fa fa-circle-thin"></i> Clear </a>
+
             <a href="" class="btn btn-link btn-default pull-right" ng-click="saveCurrentSetting()"><i
                     class="fa fa-floppy-o"></i> Save current setting</a>
 
@@ -193,9 +196,9 @@
                                     <span popover="{{criteria.help_text}}" popover-trigger="mouseenter">{{criteria.display_text}} </span>
                                     :
                                     <input type="number" ng-model='currentCategory.weights[criteria.name]' min="-100"
-                                           max="100" step="1" required>
+                                           max="100" step="20" required>
                                     <input type="range" ng-model='currentCategory.weights[criteria.name]' min="-100"
-                                           max="100" step="1" required>
+                                           max="100" step="20" required>
                                 </div>
 
 
@@ -223,7 +226,7 @@
                     <dt dir-paginate-start='comment in filteredComment=(nomaData |filter: {selected:"true"} | filter:{status: tab.status } |orderBy:"score":true | filter: searchText) | itemsPerPage: 5'
                         pagination-id="tab.status">
                         {{comment.DisplayName}}
-                    <div class="commentHeader"> {{comment.Location}} , {{comment.ApproveDateConverted |
+                    <div class="commentHeader"> {{comment.Location}} , {{comment.ApproveDateConverted *1000|
                         date:'medium'}}
                     </div>
                     </dt>

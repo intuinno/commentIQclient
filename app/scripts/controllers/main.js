@@ -110,10 +110,10 @@ angular.module('commentiqApp')
                 RecommendationScore: 10.0
             }
         }, {
-            name: 'Informative comment',
+            name: 'Personal Story',
             weights: {
-                ArticleRelevance: 71,
-                ConversationalRelevance: 70,
+                ArticleRelevance: 0,
+                ConversationalRelevance: 0,
                 AVGcommentspermonth: 0,
                 AVGBrevity: 0,
                 AVGPersonalXP: 0,
@@ -122,35 +122,35 @@ angular.module('commentiqApp')
                 AVGRecommendationScore: 0,
                 Brevity: 60,
                 PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
+                Readability: 0,
+                RecommendationScore: 0
             }
         }, {
             name: 'Unexpected comment',
             weights: {
-                ArticleRelevance: 62,
-                ConversationalRelevance: 70,
+                ArticleRelevance: 0,
+                ConversationalRelevance: 0,
                 AVGcommentspermonth: 0,
                 AVGBrevity: 0,
                 AVGPersonalXP: 0,
-                AVGPicks: 0,
+                AVGPicks: 40,
                 AVGReadability: 0,
-                AVGRecommendationScore: 0,
-                Brevity: 60,
-                PersonalXP: 50,
-                Readability: 40,
-                RecommendationScore: 30
+                AVGRecommendationScore: 40,
+                Brevity: -100,
+                PersonalXP: 0,
+                Readability: 0,
+                RecommendationScore: 40
             },
         }, {
             name: 'Written by best user',
             weights: {
                 ArticleRelevance: 0,
                 ConversationalRelevance: 0,
-                AVGcommentspermonth: 90,
-                AVGBrevity: 80,
-                AVGPersonalXP: 90,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
                 AVGPicks: 90,
-                AVGReadability: 90,
+                AVGReadability: 30,
                 AVGRecommendationScore: 90,
                 Brevity: 0,
                 PersonalXP: 0,
@@ -158,6 +158,24 @@ angular.module('commentiqApp')
                 RecommendationScore: 0
             }
         }];
+
+        var emptyCategory = {
+            name: 'Temporary for Test',
+            weights: {
+                ArticleRelevance: 0,
+                ConversationalRelevance: 0,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
+                AVGPicks: 0,
+                AVGReadability:0,
+                AVGRecommendationScore: 0,
+                Brevity: 0,
+                PersonalXP: 0,
+                Readability: 0,
+                RecommendationScore: 0
+            }
+        };
 
 
         $scope.currentCategory = $scope.presetCategory[0];
@@ -331,6 +349,13 @@ angular.module('commentiqApp')
             }, function() {
                 $log.info('Modal dismissed at: ' + new Date());
             });
+        };
+
+        $scope.clearSetting = function() {
+
+
+                $scope.currentCategory = angular.copy(emptyCategory);
+               
         };
 
         $scope.openHelpModalForCriteria = function() {

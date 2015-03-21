@@ -141,18 +141,50 @@
                     ConversationalRelevance: -23.1689392323,
                     PersonalXP: -3.41660411201,
                     Readability: 38.3964425234,
-                    RecommendationScore: 100.0
+                    RecommendationScore: 10.0
                 }
             }, {
-                name: 'User Score',
+                name: 'Personal Story',
                 weights: {
                     ArticleRelevance: 0,
                     ConversationalRelevance: 0,
-                    AVGcommentspermonth: 90,
-                    AVGBrevity: 80,
-                    AVGPersonalXP: 90,
+                    AVGcommentspermonth: 0,
+                    AVGBrevity: 0,
+                    AVGPersonalXP: 0,
+                    AVGPicks: 0,
+                    AVGReadability: 0,
+                    AVGRecommendationScore: 0,
+                    Brevity: 60,
+                    PersonalXP: 50,
+                    Readability: 0,
+                    RecommendationScore: 0
+                }
+            }, {
+                name: 'Unexpected comment',
+                weights: {
+                    ArticleRelevance: 0,
+                    ConversationalRelevance: 0,
+                    AVGcommentspermonth: 0,
+                    AVGBrevity: 0,
+                    AVGPersonalXP: 0,
+                    AVGPicks: 40,
+                    AVGReadability: 0,
+                    AVGRecommendationScore: 40,
+                    Brevity: -100,
+                    PersonalXP: 0,
+                    Readability: 0,
+                    RecommendationScore: 40
+                },
+            }, {
+                name: 'Written by best user',
+                weights: {
+                    ArticleRelevance: 0,
+                    ConversationalRelevance: 0,
+                    AVGcommentspermonth: 0,
+                    AVGBrevity: 0,
+                    AVGPersonalXP: 0,
                     AVGPicks: 90,
-                    AVGReadability: 90,
+                    AVGReadability: 30,
                     AVGRecommendationScore: 90,
                     Brevity: 0,
                     PersonalXP: 0,

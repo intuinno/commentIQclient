@@ -35,6 +35,25 @@ angular.module('commentiqApp')
             }
         };
 
+        
+        var emptyCategory = {
+            name: 'Temporary for Test',
+            weights: {
+                ArticleRelevance: 0,
+                ConversationalRelevance: 0,
+                AVGcommentspermonth: 0,
+                AVGBrevity: 0,
+                AVGPersonalXP: 0,
+                AVGPicks: 0,
+                AVGReadability:0,
+                AVGRecommendationScore: 0,
+                Brevity: 0,
+                PersonalXP: 0,
+                Readability: 0,
+                RecommendationScore: 0
+            }
+        };
+
         $scope.currentCategory = {
             name: 'Best based on comment',
             weights: {
@@ -384,6 +403,13 @@ angular.module('commentiqApp')
             }, function() {
                 console.log('Modal dismissed at: ' + new Date());
             });
+        };
+
+        $scope.clearSetting = function() {
+
+
+            $scope.currentCategory = angular.copy(emptyCategory);
+
         };
 
         $scope.openHelpModalForCriteria = function() {
