@@ -24,7 +24,15 @@
                 <div class="gathermap overview" data="nomaData"></div>
             </div>
             <div ng-show="overview=='temporal'">
-                <div tempo-line class="overview" data="nomaData" dim="selectedItem"></div>
+                <div tempo-line class="overview" data="nomaData" dim="tempoDim"></div>
+                <div class="chart-simple-interface">
+                    <h5>{{tempoDimExplanation.display_text}}
+                <small> {{tempoDimExplanation.help_text}}</small>
+            </h5>
+                    <select ng-model="tempoDim" ng-options="f.name as f.display_text for f in criterias">
+                        <option value="">Number of Comment</option>
+                    </select>
+                </div>
             </div>
             <div ng-show="overview=='gatherplot'">
                 <div gatherplot data="nomaData" config="nomaConfig" border="nomaBorder" round="nomaRound" shaperenderingmode="nomaShapeRendering" dimsum="dimsum" on-click="d3OnClick(item)" xdim="{{nomaConfig.xDim}}" ydim="{{nomaConfig.yDim}}" context="context" comment="isComment" criterias="criterias">
@@ -58,9 +66,7 @@
 
 
     <br/>
-    <select ng-model="selectedItem">
-        <option ng-repeat="item in itemlist" value="{{item.value}}">{{item.name}}</option>
-    </select>
+
 </div>
 
 

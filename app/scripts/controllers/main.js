@@ -192,6 +192,7 @@ angular.module('commentiqApp')
         $scope.dimsum.selectionSpace = [];
         $scope.filteredComment = [];
 
+
         $scope.nomaConfig.SVGAspectRatio = 1.4;
 
         $scope.overview = "temporal";
@@ -237,6 +238,14 @@ angular.module('commentiqApp')
             return $scope.nomaConfig.yDim;
         }, function(newVals, oldVals) {
             $scope.yAxisExplanation = findExplantion($scope.nomaConfig.yDim);
+            // $scope.$apply();
+
+        }, true);
+
+        $scope.$watch(function() {
+            return $scope.tempoDim;
+        }, function(newVals, oldVals) {
+            $scope.tempoDimExplanation = findExplantion($scope.tempoDim);
             // $scope.$apply();
 
         }, true);
@@ -443,22 +452,37 @@ angular.module('commentiqApp')
             // $scope.article.replace(/\\/g, "");
         $scope.articleTitle = $scope.articleTitleData[0];
 
-        
 
-        $scope.itemlist = [ { "name" : "Average Comment Count" , "value" : "CommentCount" },
-                            { "name" : "Average Article Relevance" , "value" : "ArticleRelevance" },
-                            { "name" : "Average ConversationalRelevance" , "value" : "ConversationalRelevance" },
-                            { "name" : "Average Personal Experience" , "value" : "PersonalXP" },
-                            { "name" : "Average Readability" , "value" : "Readability" },
-                            { "name" : "Average Brevity" , "value" : "Brevity" },
-                            { "name" : "Average Recommendation" , "value" : "Recommendation" } ]
+
+        $scope.itemlist = [{
+            "name": "Average Comment Count",
+            "value": "CommentCount"
+        }, {
+            "name": "Average Article Relevance",
+            "value": "ArticleRelevance"
+        }, {
+            "name": "Average ConversationalRelevance",
+            "value": "ConversationalRelevance"
+        }, {
+            "name": "Average Personal Experience",
+            "value": "PersonalXP"
+        }, {
+            "name": "Average Readability",
+            "value": "Readability"
+        }, {
+            "name": "Average Brevity",
+            "value": "Brevity"
+        }, {
+            "name": "Average Recommendation",
+            "value": "Recommendation"
+        }]
 
 
         $scope.selectedItem = "CommentCount"
 
         $scope.select_criteria = "CommentCount"
 
-        $scope.$watch('selectedItem',function(newValue,oldValue){
+        $scope.$watch('selectedItem', function(newValue, oldValue) {
             $scope.select_criteria = newValue
         })
 

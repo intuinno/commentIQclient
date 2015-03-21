@@ -13,21 +13,18 @@ angular.module('commentiqApp')
             restrict: 'EAC',
             scope: {
                 data: "=",
-                config: "=",
-                context: "="
+                dim: "=",
             },
 
             link: function postLink(scope, element, attrs) {
 
                 // var trendData = parseData(scope.data);
 
-                var data;
-
                 scope.$watch('data', function(newVals, oldVals) {
 
-                    if (newVals.length > 0) {
+                    if (newVals.length > 0 && newVals.length !== oldVals.length) {
 
-                        return scope.renderDataChange(newVals);
+                        return scope.renderDataChange(scope.data);
 
                     } else {
 
@@ -37,17 +34,22 @@ angular.module('commentiqApp')
 
                 }, true);
 
+
+                scope.$watch('dim', function(newVals, oldVals) {
+
+                    console.log(newVals);
+
+                }, true);
+
                 scope.$watch(function() {
                     return angular.element(window)[0].innerWidth;
                 }, function() {
-                    return parseData(data);
+                    return parseData(scope.data);
                 });
 
                 scope.renderDataChange = function(newVals) {
 
-                    data = angular.copy(newVals);
-
-                    parseData(data);
+                    parseData(newVals);
 
                 }
 
@@ -89,31 +91,47 @@ angular.module('commentiqApp')
                         }),
                         dates = date.group(d3.time.hour);
 
+                    var timeExtent = d3.extent(dates.all(), function(d) {
+                                return d.key;
+                            });
+
+                    var timeExtentCopy = angular.copy(timeExtent);
+
+                    timeExtentCopy[1] = timeExtentCopy[1].setHours(timeExtentCopy[1].getHours()+1);
+
                     chart = barChart()
                         .dimension(date)
                         .group(dates)
                         .round(d3.time.hour.round)
                         .x(d3.time.scale()
-                            .domain(d3.extent(data, function(d) {
-                                return d.date;
-                            }))
-                            .rangeRound([0, width - 100]))
-                        .filter(d3.extent(data, function(d) {
-                            return d.date;
-                        }))
-                        .on("brush", render)
-                        .on("brushend", render)
+                            .domain(timeExtentCopy)
+                            .rangeRound([0, width - 100])
+                            .nice(d3.time.hour))
+                        // .filter(d3.extent(data, function(d) {
+                        //     return d.date;
+                        // }))
+                        // .on("brush", render)
+                        .on("brushend", render);
 
                     var domParent = d3.select(element[0])
                         .call(chart);
 
-                }
+                    function render() {
+                        // console.log("I'm here");
+                        // console.log(date.top(Infinity));
 
-                function render() {
+                        scope.data.forEach(function(d) {
+                            d.selected = false;
+                        });
 
-                    console.log("I'm here");
+                        var selectedData = date.top(Infinity);
+                        selectedData.forEach(function(d) {
 
+                            d.selected = true;
+                        });
 
+                        scope.$apply();
+                    }
 
                 }
 
@@ -129,16 +147,17 @@ function barChart() {
     if (!barChart.id) barChart.id = 0;
 
     var margin = {
-            top: 100,
-            right: 10,
+            top: 50,
+            right: 30,
             bottom: 50,
-            left: 10
+            left: 50
         },
         x,
         y = d3.scale.linear().range([200, 0]),
         id = barChart.id++,
         // axis = d3.svg.axis().orient("bottom").tickFormat(d3.time.format("%I%p, %d")),
         axis = d3.svg.axis().orient("bottom"),
+        yAxis = d3.svg.axis().orient("left"),
         brush = d3.svg.brush(),
         brush = d3.svg.brush(),
         brushDirty,
@@ -151,6 +170,8 @@ function barChart() {
             height = y.range()[0];
 
         y.domain([0, group.top(1)[0].value]);
+
+        yAxis.scale(y);
 
         div.each(function() {
             var div = d3.select(this);
@@ -194,6 +215,15 @@ function barChart() {
                     .attr("class", "axis")
                     .attr("transform", "translate(0," + height + ")")
                     .call(axis);
+
+                g.append("g")
+                    .attr("class", "axis")
+                    .attr("transform", "translate(0," + height + ")")
+                    .call(axis);
+
+                g.append("g")
+                    .attr("class", "y axis")
+                    .call(yAxis);
 
                 // Initialize the brush component with pretty resize handles.
                 var gBrush = g.append("g").attr("class", "brushTempo").call(brush);
