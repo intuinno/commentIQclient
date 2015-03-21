@@ -294,6 +294,15 @@ angular.module('commentiqApp')
 
         }, true);
 
+        $scope.$watch(function() {
+            return $scope.tempoDim;
+        }, function(newVals, oldVals) {
+            $scope.tempoDimExplanation = findExplantion($scope.tempoDim);
+            // $scope.$apply();
+
+        }, true);
+
+
         var findExplantion = function(dimName) {
             var filtered = $scope.criterias.filter(function(d) {
                 return d.name === dimName ? true : false;

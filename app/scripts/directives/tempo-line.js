@@ -20,6 +20,8 @@ angular.module('commentiqApp')
 
                 // var trendData = parseData(scope.data);
 
+                var dates;
+
                 scope.$watch('data', function(newVals, oldVals) {
 
                     if (newVals.length > 0 && newVals.length !== oldVals.length) {
@@ -34,10 +36,63 @@ angular.module('commentiqApp')
 
                 }, true);
 
+                function reduceAddAvg(attr) {
+
+                    if (!attr) {
+
+                        return function(p, v) {
+                            p.avg += 1;
+                            return p;
+                        };
+                    } else {
+                        return function(p, v) {
+                            ++p.count
+                            p.sum += Number(v[attr]);
+                            p.avg = p.sum / p.count;;
+                            return p;
+                        };
+                    }
+                }
+
+                function reduceRemoveAvg(attr) {
+
+                    if (!attr) {
+
+                        return function(p, v) {
+                            p.avg += -1;
+                            return p;
+                        };
+                    } else {
+                        return function(p, v) {
+                            ++p.count
+                            p.sum -= Number(v[attr]);
+                            p.avg = p.sum / p.count;;
+                            return p;
+                        };
+                    }
+                }
+
+                function reduceInitAvg() {
+                    return {
+                        count: 0,
+                        sum: 0,
+                        avg: 0
+                    };
+                }
+
 
                 scope.$watch('dim', function(newVals, oldVals) {
 
                     console.log(newVals);
+
+                    if (!dates) {
+
+                        return;
+                    }
+
+
+
+                    parseData(scope.data);
 
                 }, true);
 
@@ -57,18 +112,6 @@ angular.module('commentiqApp')
 
                 var chart = barChart();
 
-                // update();
-
-                // function update() {
-
-                //     width = d3.select(element[0]).node().parentNode.parentNode.offsetWidth;
-                //     height = width * 0.7;
-
-                //     // chart.size([width, height]);
-
-                //     // domParent.call(chart);
-
-                // }
 
                 function parseData(data) {
 
@@ -88,16 +131,21 @@ angular.module('commentiqApp')
                     var trendCrossFilter = crossfilter(data),
                         date = trendCrossFilter.dimension(function(d) {
                             return d.date;
-                        }),
-                        dates = date.group(d3.time.hour);
+                        });
+
+                    dates = date.group(d3.time.hour);
+
+
+                    dates.reduce(reduceAddAvg(scope.dim), reduceRemoveAvg(scope.dim), reduceInitAvg);
+
 
                     var timeExtent = d3.extent(dates.all(), function(d) {
-                                return d.key;
-                            });
+                        return d.key;
+                    });
 
                     var timeExtentCopy = angular.copy(timeExtent);
 
-                    timeExtentCopy[1] = timeExtentCopy[1].setHours(timeExtentCopy[1].getHours()+1);
+                    timeExtentCopy[1] = timeExtentCopy[1].setHours(timeExtentCopy[1].getHours() + 1);
 
                     chart = barChart()
                         .dimension(date)
@@ -107,10 +155,6 @@ angular.module('commentiqApp')
                             .domain(timeExtentCopy)
                             .rangeRound([0, width - 100])
                             .nice(d3.time.hour))
-                        // .filter(d3.extent(data, function(d) {
-                        //     return d.date;
-                        // }))
-                        // .on("brush", render)
                         .on("brushend", render);
 
                     var domParent = d3.select(element[0])
@@ -169,7 +213,11 @@ function barChart() {
         var width = x.range()[1],
             height = y.range()[0];
 
-        y.domain([0, group.top(1)[0].value]);
+        var maxValue = d3.max(group.all(), function(d) {
+        	return d.value.avg;
+        });
+
+        y.domain([0, maxValue]);
 
         yAxis.scale(y);
 
@@ -264,7 +312,7 @@ function barChart() {
 
             while (++i < n) {
                 d = groups[i];
-                path.push("M", x(d.key), ",", height, "V", y(d.value), "h", barWidth, "V", height);
+                path.push("M", x(d.key), ",", height, "V", y(d.value.avg), "h", barWidth, "V", height);
             }
             return path.join("");
         }
