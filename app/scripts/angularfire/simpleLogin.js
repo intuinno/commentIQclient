@@ -130,17 +130,18 @@
                 name: 'Default',
                 weights: {
 
-                    ArticleRelevance: 7.86201737048,
-                    AVGcommentspermonth: 4.35852419981,
-                    AVGBrevity: 5.1970003667,
-                    AVGPersonalXP: -9.32348508211,
-                    AVGPicks: 38.9927375598,
-                    AVGReadability: -6.49269894463,
-                    AVGRecommendationScore: -28.166889932,
-                    Brevity: 7.06683779322,
-                    ConversationalRelevance: -23.1689392323,
-                    PersonalXP: -3.41660411201,
-                    Readability: 38.3964425234,
+
+                    ArticleRelevance: 41.7050691338,
+                    AVGcommentspermonth: 11.3163696168,
+                    AVGBrevity: -8.44420731416,
+                    AVGPersonalXP: 10.6800123967,
+                    AVGPicks: 38.7413080958,
+                    AVGReadability: 69.9140232479,
+                    AVGRecommendationScore: 16.9226104916,
+                    Brevity: -65.7550166251,
+                    ConversationalRelevance: -56.8332353888,
+                    PersonalXP: 5.93998767753,
+                    Readability: 100.0,
                     RecommendationScore: 10.0
                 }
             }, {
@@ -194,7 +195,7 @@
             }];
 
 
-            d3.csv('data/commentScore_geo_user.csv', function(error, tdata) {
+            d3.csv('data/article1.csv', function(error, tdata) {
                 var count = 0;
 
                 tdata.map(function(d) {
@@ -208,6 +209,8 @@
                     d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
 
                     d.commentBody = d.commentBody.replace(/\\/g, "");
+
+                    d.commentBody = d.commentBody.replace(/�/g, "");
                 });
 
                 ref.set({
@@ -253,10 +256,10 @@
 
             // });
 
-            d3.csv('data/article3_final_normalized.csv', function(error, tdata2) {
+            d3.csv('data/article3.csv', function(error, tdata2) {
                 var count = 0;
 
-                d3.csv('data/article2_final_normalized.csv', function(error, tdata) {
+                d3.csv('data/article2.csv', function(error, tdata) {
                     var count = 0;
 
                     tdata.map(function(d) {
@@ -270,6 +273,8 @@
                         d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
 
                         d.commentBody = d.commentBody.replace(/\\/g, "");
+
+                        d.commentBody = d.commentBody.replace(/�/g, "");
                     });
 
 
@@ -284,6 +289,8 @@
                         d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
 
                         d.commentBody = d.commentBody.replace(/\\/g, "");
+
+                        d.commentBody = d.commentBody.replace(/�/g, "");
                     });
 
                     ref.update({

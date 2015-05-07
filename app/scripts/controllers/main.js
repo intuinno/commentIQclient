@@ -93,21 +93,22 @@ angular.module('commentiqApp')
 
 
         $scope.presetCategory = [{
-            name: 'Best based on comment',
+            name: 'Default',
             weights: {
 
-                ArticleRelevance: 7.86201737048,
-                AVGcommentspermonth: 4.35852419981,
-                AVGBrevity: 5.1970003667,
-                AVGPersonalXP: -9.32348508211,
-                AVGPicks: 38.9927375598,
-                AVGReadability: -6.49269894463,
-                AVGRecommendationScore: -28.166889932,
-                Brevity: 7.06683779322,
-                ConversationalRelevance: -23.1689392323,
-                PersonalXP: -3.41660411201,
-                Readability: 38.3964425234,
-                RecommendationScore: 10.0
+
+                ArticleRelevance: 41.7050691338,
+                AVGcommentspermonth: 11.3163696168,
+                AVGBrevity: -8.44420731416,
+                AVGPersonalXP: 10.6800123967,
+                AVGPicks: 38.7413080958,
+                AVGReadability: 69.9140232479,
+                AVGRecommendationScore: 16.9226104916,
+                Brevity: -65.7550166251,
+                ConversationalRelevance: -56.8332353888,
+                PersonalXP: 5.93998767753,
+                Readability: 100.0,
+                RecommendationScore: 100.0
             }
         }, {
             name: 'Personal Story',
@@ -168,7 +169,7 @@ angular.module('commentiqApp')
                 AVGBrevity: 0,
                 AVGPersonalXP: 0,
                 AVGPicks: 0,
-                AVGReadability:0,
+                AVGReadability: 0,
                 AVGRecommendationScore: 0,
                 Brevity: 0,
                 PersonalXP: 0,
@@ -354,14 +355,14 @@ angular.module('commentiqApp')
         $scope.clearSetting = function() {
 
 
-                $scope.currentCategory = angular.copy(emptyCategory);
-               
+            $scope.currentCategory = angular.copy(emptyCategory);
+
         };
 
         $scope.openHelpModalForCriteria = function() {
 
             var modalInstance = $modal.open({
-                templateUrl: 'helpCriteriaModal.html',
+                templateUrl: 'helpCriteriaModalLoad.html',
                 controller: 'HelpCriteriaModalCtrl',
                 size: 'lg',
                 resolve: {
@@ -423,7 +424,7 @@ angular.module('commentiqApp')
 
         $scope.loadData = function() {
 
-            d3.csv('data/commentScore_geo_user.csv', function(error, tdata) {
+            d3.csv('data/article1.csv', function(error, tdata) {
                 var count = 0;
 
                 tdata.map(function(d) {
@@ -436,7 +437,14 @@ angular.module('commentiqApp')
 
                     d.ApproveDateConverted = parseInt(d.ApproveDate.replace(/,/g, ''));
 
+                    console.log(d.commentBody);
+
                     d.commentBody = d.commentBody.replace(/\\/g, "");
+                    d.commentBody = d.commentBody.replace(/�/g, "");
+
+
+
+
                 });
 
 

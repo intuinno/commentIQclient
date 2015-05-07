@@ -1,0 +1,67 @@
+<!doctype html>
+<html class="no-js">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+    <link rel="stylesheet" href="styles/vendor.e3a13df9.css">
+    <link rel="stylesheet" href="styles/main.da426c71.css">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+</head>
+
+<body ng-app="commentiqApp">
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!-- Add your site or application content here -->
+    <div class="container">
+        <div class="header">
+            <ul class="nav nav-pills pull-right">
+                <li><a href="#browse">Browse Articles</a>
+                </li>
+                <!-- //angularfire -->
+                <li>
+                    <a ng-hide-auth="" href='#/login'>log in</a>
+                    <a ng-show-auth="" href="#/account">account</a>
+                </li>
+            </ul>
+        
+        <h3 class="text-muted">commentIQ</h3>
+    </div>
+
+    <div ng-view=""></div>
+<!-- 
+    <div class="footer">
+        <p><span class="glyphicon glyphicon-heart"></span> from the University of Maryland College Park</p>
+    </div> -->
+    </div>
+
+
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script>
+    ! function(A, n, g, u, l, a, r) {
+        A.GoogleAnalyticsObject = l, A[l] = A[l] || function() {
+                (A[l].q = A[l].q || []).push(arguments)
+            }, A[l].l = +new Date, a = n.createElement(g),
+            r = n.getElementsByTagName(g)[0], a.src = u, r.parentNode.insertBefore(a, r)
+    }(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+    ga('create', 'UA-XXXXX-X');
+    ga('send', 'pageview');
+    </script>
+
+    <!--[if lt IE 9]>
+    <script src="scripts/oldieshim.572be7b4.js"></script>
+    <![endif]-->
+
+    <script src="scripts/vendor.ba81d678.js"></script>
+
+    <script src="scripts/scripts.8ccd447e.js"></script>
+</body>
+
+</html>

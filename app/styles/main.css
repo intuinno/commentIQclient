@@ -1,3 +1,7 @@
+.help-two-column {
+    width:150px;
+}
+
 .axis path, .axis line {
   fill: none;
   stroke: #000;
